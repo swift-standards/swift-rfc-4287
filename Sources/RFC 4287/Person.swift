@@ -37,6 +37,22 @@ extension RFC_4287 {
             self.email = email
         }
 
+        /// Creates a new person construct with IRI.Representable URI (convenience)
+        ///
+        /// Accepts any IRI.Representable type such as Foundation URL.
+        ///
+        /// - Parameters:
+        ///   - name: The person's name
+        ///   - uri: An optional IRI-representable value (e.g., URL)
+        ///   - email: An optional email address (RFC 2822 AddrSpec)
+        public init(
+            name: String,
+            uri: (any RFC_3987.IRI.Representable)?,
+            email: RFC_2822.AddrSpec? = nil
+        ) {
+            self.init(name: name, uri: uri?.iri, email: email)
+        }
+
         /// Creates a new person construct with string email (convenience)
         ///
         /// - Parameters:

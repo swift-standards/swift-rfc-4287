@@ -108,6 +108,55 @@ extension RFC_4287 {
             self.summary = summary
         }
 
+        /// Creates a new entry with validation using IRI.Representable id (convenience)
+        ///
+        /// Accepts any IRI.Representable type such as Foundation URL.
+        ///
+        /// - Parameters:
+        ///   - id: Permanent, universally unique identifier (e.g., URL)
+        ///   - title: Human-readable title
+        ///   - updated: Timestamp of last modification
+        ///   - authors: Entry authors
+        ///   - content: Entry content
+        ///   - links: Associated links
+        ///   - categories: Entry categories
+        ///   - contributors: Entry contributors
+        ///   - published: Publication timestamp
+        ///   - rights: Rights information
+        ///   - source: Source feed metadata
+        ///   - summary: Entry summary
+        ///
+        /// - Returns: A validated entry, or nil if validation fails
+        public init?(
+            id: any RFC_3987.IRI.Representable,
+            title: Text,
+            updated: Date,
+            authors: [Person] = [],
+            content: Content? = nil,
+            links: [Link] = [],
+            categories: [Category] = [],
+            contributors: [Person] = [],
+            published: Date? = nil,
+            rights: Text? = nil,
+            source: Source? = nil,
+            summary: Text? = nil
+        ) {
+            self.init(
+                id: id.iri,
+                title: title,
+                updated: updated,
+                authors: authors,
+                content: content,
+                links: links,
+                categories: categories,
+                contributors: contributors,
+                published: published,
+                rights: rights,
+                source: source,
+                summary: summary
+            )
+        }
+
         /// Creates a new entry without validation (for internal use, e.g. decoding)
         internal static func makeUnchecked(
             id: String,
