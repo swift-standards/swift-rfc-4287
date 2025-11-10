@@ -1,0 +1,148 @@
+# swift-rfc-4287
+
+[![CI](https://github.com/swift-web-standards/swift-rfc-4287/workflows/CI/badge.svg)](https://github.com/swift-web-standards/swift-rfc-4287/actions/workflows/ci.yml)
+![Development Status](https://img.shields.io/badge/status-active--development-blue.svg)
+
+Type-safe Atom feed generation and parsing for Swift (RFC 4287 implementation).
+
+## Overview
+
+swift-rfc-4287 provides complete Atom Syndication Format support as defined in RFC 4287 with type-safe Swift types for generating and parsing Atom feeds.
+
+## Features
+
+- **Complete RFC 4287 Support**: All required and optional feed and entry elements per RFC 4287 specification
+- **Type Safety**: Compile-time validation with Hashable, Sendable, Codable conformance
+- **Validation**: Failable initializers enforce Atom requirements (entries require content OR alternate link)
+- **XML Generation**: Direct XML output with proper escaping and RFC 3339 date formatting
+- **XML Parsing**: XMLParser-based decoding from Atom XML strings
+- **Swift 6.0 Concurrency**: Strict concurrency mode with complete Sendable conformance
+
+## Installation
+
+Add swift-rfc-4287 to your Package.swift dependencies:
+
+```swift
+dependencies: [
+    .package(url: "https://github.com/swift-web-standards/swift-rfc-4287", from: "0.1.0")
+]
+```
+
+Then add the product to your target dependencies:
+
+```swift
+.target(
+    name: "YourTarget",
+    dependencies: [
+        .product(name: "RFC 4287", package: "swift-rfc-4287")
+    ]
+)
+```
+
+## IRI Support (RFC 3987)
+
+Per RFC 4287 requirements, all URI fields now use **`RFC_3987.IRI` types** for compile-time type safety and proper internationalization support.
+
+This module automatically re-exports RFC 3987 (Internationalized Resource Identifiers), so you don't need to import it separately.
+
+### IRI Fields
+
+These fields are now typed as `RFC_3987.IRI` or `RFC_3987.IRI?`:
+- `Feed.id`, `Entry.id` - Required IRI identifiers
+- `Feed.icon`, `Feed.logo` - Feed imagery
+- `Link.href` - Link destinations
+- `Person.uri` - Person homepage
+- `Content.src` - Out-of-line content source
+- `Generator.uri`, `Category.scheme`, `Source` fields
+
+### Using IRIs
+
+You can create feeds using string literals (recommended), IRI types, or Foundation URLs:
+
+```swift
+// String literals (recommended - clean and simple)
+let feed = RFC_4287.Feed(
+    id: "https://example.com/feed",
+    title: "My Feed",
+    updated: Date()
+)
+
+// Explicit IRI type
+let id = try RFC_3987.IRI("https://example.com/feed")
+let feed = RFC_4287.Feed(id: id, title: "My Feed", updated: Date())
+
+// Foundation URL (via IRI.Representable)
+let url = URL(string: "https://example.com/feed")!
+let feed = RFC_4287.Feed(id: url, title: "My Feed", updated: Date())
+```
+
+## Quick Start
+
+```swift
+import RFC_4287
+import Foundation
+
+// Create an Atom feed
+let feed = RFC_4287.Feed(
+    id: "urn:uuid:60a76c80-d399-11d9-b93C-0003939e0af6",
+    title: "Example Feed",
+    updated: Date(),
+    authors: ["John Doe"],
+    entries: [
+        RFC_4287.Entry(
+            id: "urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a",
+            title: "First Post",
+            updated: Date(),
+            content: RFC_4287.Content(value: "Hello, world!", type: .text)
+        )!
+    ]
+)
+
+// Generate XML
+let xmlString = feed!.toXML()
+print(xmlString)
+```
+
+## Usage Examples
+
+### XML Parsing
+
+```swift
+import RFC_4287
+
+let atomXML = """
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>urn:uuid:feed-id</id>
+    <title>Example Feed</title>
+    <updated>2021-01-01T00:00:00Z</updated>
+    <author>
+        <name>John Doe</name>
+    </author>
+    <entry>
+        <id>urn:uuid:entry-1</id>
+        <title>First Entry</title>
+        <updated>2021-01-01T12:00:00Z</updated>
+        <content type="text">Entry content</content>
+    </entry>
+</feed>
+"""
+
+let feed = try RFC_4287.Feed(xmlString: atomXML)
+print(feed.title.value)  // "Example Feed"
+print(feed.entries.count)  // 1
+```
+
+## Related Packages
+
+- [swift-rss](https://github.com/swift-web-standards/swift-rss): Type-safe RSS 2.0 feed generation and parsing for Swift
+- [swift-json-feed](https://github.com/swift-web-standards/swift-json-feed): Type-safe JSON Feed generation and parsing for Swift
+- [swift-syndication](https://github.com/coenttb/swift-syndication): Unified syndication API supporting RSS, Atom, and JSON Feed with format conversion
+
+## License
+
+This project is licensed under the Apache License 2.0. See LICENSE for details.
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
