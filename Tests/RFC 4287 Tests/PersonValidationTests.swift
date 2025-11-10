@@ -160,4 +160,13 @@ struct PersonIRIIntegrationTests {
 
         #expect(person.uri == "https://example.com/~user")
     }
+
+    @Test("Person with Foundation URL via IRI.Representable")
+    func foundationURLSupport() throws {
+        let url = URL(string: "https://example.com/~user")!
+        let email = try RFC_2822.AddrSpec(localPart: "user", domain: "example.com")
+        let person = RFC_4287.Person(name: "User", uri: url, email: email)
+
+        #expect(person.uri == "https://example.com/~user")
+    }
 }

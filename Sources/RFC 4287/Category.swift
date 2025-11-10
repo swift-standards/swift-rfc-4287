@@ -30,6 +30,22 @@ extension RFC_4287 {
             self.scheme = scheme
             self.label = label
         }
+
+        /// Creates a new category with IRI.Representable scheme (convenience)
+        ///
+        /// Accepts any IRI.Representable type such as Foundation URL.
+        ///
+        /// - Parameters:
+        ///   - term: The category term
+        ///   - scheme: The categorization scheme IRI (e.g., URL)
+        ///   - label: A human-readable label
+        public init(
+            term: String,
+            scheme: (any RFC_3987.IRI.Representable)?,
+            label: String? = nil
+        ) {
+            self.init(term: term, scheme: scheme?.iri, label: label)
+        }
     }
 }
 

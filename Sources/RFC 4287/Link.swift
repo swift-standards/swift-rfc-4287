@@ -101,6 +101,28 @@ extension RFC_4287 {
             self.length = length
         }
 
+        /// Creates a new link with IRI.Representable href (convenience)
+        ///
+        /// Accepts any IRI.Representable type such as Foundation URL.
+        ///
+        /// - Parameters:
+        ///   - href: The IRI of the resource (e.g., URL, RFC_3987.IRI)
+        ///   - rel: The link relation type
+        ///   - type: The media type
+        ///   - hreflang: The language
+        ///   - title: A title for the link
+        ///   - length: The length in bytes
+        public init(
+            href: any RFC_3987.IRI.Representable,
+            rel: Relation? = nil,
+            type: String? = nil,
+            hreflang: String? = nil,
+            title: String? = nil,
+            length: Int? = nil
+        ) {
+            self.init(href: href.iri, rel: rel, type: type, hreflang: hreflang, title: title, length: length)
+        }
+
         /// Returns true if this link should be treated as an "alternate" relation
         ///
         /// Per RFC 4287 Section 4.2.7.2: If the rel attribute is not present,

@@ -108,6 +108,58 @@ extension RFC_4287 {
             self.subtitle = subtitle
         }
 
+        /// Creates a new feed with validation using IRI.Representable types (convenience)
+        ///
+        /// Accepts any IRI.Representable types such as Foundation URL.
+        ///
+        /// - Parameters:
+        ///   - id: Permanent, universally unique identifier (e.g., URL)
+        ///   - title: Human-readable title
+        ///   - updated: Timestamp of last modification
+        ///   - authors: Feed authors
+        ///   - entries: Feed entries
+        ///   - links: Associated links
+        ///   - categories: Feed categories
+        ///   - contributors: Feed contributors
+        ///   - generator: Generator information
+        ///   - icon: Icon IRI (e.g., URL)
+        ///   - logo: Logo IRI (e.g., URL)
+        ///   - rights: Rights information
+        ///   - subtitle: Feed subtitle
+        ///
+        /// - Returns: A validated feed, or nil if validation fails
+        public init?(
+            id: any RFC_3987.IRI.Representable,
+            title: Text,
+            updated: Date,
+            authors: [Person] = [],
+            entries: [Entry] = [],
+            links: [Link] = [],
+            categories: [Category] = [],
+            contributors: [Person] = [],
+            generator: Generator? = nil,
+            icon: (any RFC_3987.IRI.Representable)? = nil,
+            logo: (any RFC_3987.IRI.Representable)? = nil,
+            rights: Text? = nil,
+            subtitle: Text? = nil
+        ) {
+            self.init(
+                id: id.iri,
+                title: title,
+                updated: updated,
+                authors: authors,
+                entries: entries,
+                links: links,
+                categories: categories,
+                contributors: contributors,
+                generator: generator,
+                icon: icon?.iri,
+                logo: logo?.iri,
+                rights: rights,
+                subtitle: subtitle
+            )
+        }
+
         /// Creates a new feed without validation (for internal use, e.g. decoding)
         internal static func makeUnchecked(
             id: String,

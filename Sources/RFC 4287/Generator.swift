@@ -30,5 +30,21 @@ extension RFC_4287 {
             self.uri = uri
             self.version = version
         }
+
+        /// Creates a new generator with IRI.Representable URI (convenience)
+        ///
+        /// Accepts any IRI.Representable type such as Foundation URL.
+        ///
+        /// - Parameters:
+        ///   - value: The generator name
+        ///   - uri: IRI for the generator (e.g., URL)
+        ///   - version: Version of the generator
+        public init(
+            value: String,
+            uri: (any RFC_3987.IRI.Representable)?,
+            version: String? = nil
+        ) {
+            self.init(value: value, uri: uri?.iri, version: version)
+        }
     }
 }

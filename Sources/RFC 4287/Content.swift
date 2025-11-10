@@ -90,6 +90,17 @@ extension RFC_4287 {
             self.src = src
         }
 
+        /// Creates out-of-line content with IRI.Representable source (convenience)
+        ///
+        /// Accepts any IRI.Representable type such as Foundation URL.
+        ///
+        /// - Parameters:
+        ///   - src: The IRI of the content (e.g., URL)
+        ///   - type: The content type
+        public init(src: any RFC_3987.IRI.Representable, type: ContentType = .text) {
+            self.init(src: src.iri, type: type)
+        }
+
         /// Determines if this content type requires base64 encoding per RFC 4287 Section 4.1.3.3
         ///
         /// Returns true if the content is a binary media type that requires base64 encoding:

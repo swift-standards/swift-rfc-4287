@@ -84,5 +84,52 @@ extension RFC_4287 {
             self.title = title
             self.updated = updated
         }
+
+        /// Creates a new source construct with IRI.Representable types (convenience)
+        ///
+        /// Accepts any IRI.Representable types such as Foundation URL.
+        ///
+        /// - Parameters:
+        ///   - authors: Feed authors
+        ///   - categories: Feed categories
+        ///   - contributors: Feed contributors
+        ///   - generator: Generator information
+        ///   - icon: Icon IRI (e.g., URL)
+        ///   - id: Feed ID (e.g., URL)
+        ///   - links: Links
+        ///   - logo: Logo IRI (e.g., URL)
+        ///   - rights: Feed rights
+        ///   - subtitle: Feed subtitle
+        ///   - title: Feed title
+        ///   - updated: Last updated timestamp
+        public init(
+            authors: [Person] = [],
+            categories: [Category] = [],
+            contributors: [Person] = [],
+            generator: Generator? = nil,
+            icon: (any RFC_3987.IRI.Representable)? = nil,
+            id: (any RFC_3987.IRI.Representable)? = nil,
+            links: [Link] = [],
+            logo: (any RFC_3987.IRI.Representable)? = nil,
+            rights: Text? = nil,
+            subtitle: Text? = nil,
+            title: Text? = nil,
+            updated: Date? = nil
+        ) {
+            self.init(
+                authors: authors,
+                categories: categories,
+                contributors: contributors,
+                generator: generator,
+                icon: icon?.iri,
+                id: id?.iri,
+                links: links,
+                logo: logo?.iri,
+                rights: rights,
+                subtitle: subtitle,
+                title: title,
+                updated: updated
+            )
+        }
     }
 }
