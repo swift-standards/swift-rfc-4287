@@ -7,13 +7,13 @@ extension RFC_4287 {
     /// The top-level element of an Atom feed document.
     public struct Feed: Hashable, Sendable, Codable {
         /// Feed authors (at least one required if entries don't have authors)
-        public let authors: [Person]
+        public let authors: [Author]
 
         /// Feed categories
         public let categories: [Category]
 
         /// Feed contributors
-        public let contributors: [Person]
+        public let contributors: [Contributor]
 
         /// Generator information
         public let generator: Generator?
@@ -38,16 +38,26 @@ extension RFC_4287 {
         public let logo: RFC_3987.IRI?
 
         /// Copyright and licensing information
-        public let rights: Text?
+        public let rights: Rights?
 
         /// Subtitle or tagline
-        public let subtitle: Text?
+        public let subtitle: Subtitle?
 
         /// Human-readable title (required)
-        public let title: Text
+        public let title: Title
 
         /// Timestamp of last significant modification (required)
         public let updated: Date
+
+        /// Base IRI for resolving relative references (xml:base)
+        ///
+        /// Per RFC 4287 Section 2, any element may have an xml:base attribute.
+        public let base: RFC_3987.IRI?
+
+        /// Language of the feed content (xml:lang)
+        ///
+        /// Per RFC 4287 Section 2, any element may have an xml:lang attribute.
+        public let lang: String?
 
         /// Feed entries
         public let entries: [Entry]
@@ -68,22 +78,26 @@ extension RFC_4287 {
         ///   - logo: Logo IRI
         ///   - rights: Rights information
         ///   - subtitle: Feed subtitle
+        ///   - base: Base IRI for resolving relative references
+        ///   - lang: Language of the feed content
         ///
         /// - Returns: A validated feed, or nil if validation fails
         public init?(
             id: RFC_3987.IRI,
-            title: Text,
+            title: Title,
             updated: Date,
-            authors: [Person] = [],
+            authors: [Author] = [],
             entries: [Entry] = [],
             links: [Link] = [],
             categories: [Category] = [],
-            contributors: [Person] = [],
+            contributors: [Contributor] = [],
             generator: Generator? = nil,
             icon: RFC_3987.IRI? = nil,
             logo: RFC_3987.IRI? = nil,
-            rights: Text? = nil,
-            subtitle: Text? = nil
+            rights: Rights? = nil,
+            subtitle: Subtitle? = nil,
+            base: RFC_3987.IRI? = nil,
+            lang: String? = nil
         ) {
             // Validation: feed must have authors OR all entries must have authors
             let feedHasAuthors = !authors.isEmpty
@@ -106,6 +120,8 @@ extension RFC_4287 {
             self.logo = logo
             self.rights = rights
             self.subtitle = subtitle
+            self.base = base
+            self.lang = lang
         }
 
         /// Creates a new feed with validation using IRI.Representable types (convenience)
@@ -126,22 +142,26 @@ extension RFC_4287 {
         ///   - logo: Logo IRI (e.g., URL)
         ///   - rights: Rights information
         ///   - subtitle: Feed subtitle
+        ///   - base: Base IRI for resolving relative references (e.g., URL)
+        ///   - lang: Language of the feed content
         ///
         /// - Returns: A validated feed, or nil if validation fails
         public init?(
             id: any RFC_3987.IRI.Representable,
-            title: Text,
+            title: Title,
             updated: Date,
-            authors: [Person] = [],
+            authors: [Author] = [],
             entries: [Entry] = [],
             links: [Link] = [],
             categories: [Category] = [],
-            contributors: [Person] = [],
+            contributors: [Contributor] = [],
             generator: Generator? = nil,
             icon: (any RFC_3987.IRI.Representable)? = nil,
             logo: (any RFC_3987.IRI.Representable)? = nil,
-            rights: Text? = nil,
-            subtitle: Text? = nil
+            rights: Rights? = nil,
+            subtitle: Subtitle? = nil,
+            base: (any RFC_3987.IRI.Representable)? = nil,
+            lang: String? = nil
         ) {
             self.init(
                 id: id.iri,
@@ -156,25 +176,29 @@ extension RFC_4287 {
                 icon: icon?.iri,
                 logo: logo?.iri,
                 rights: rights,
-                subtitle: subtitle
+                subtitle: subtitle,
+                base: base?.iri,
+                lang: lang
             )
         }
 
         /// Creates a new feed without validation (for internal use, e.g. decoding)
         internal static func makeUnchecked(
             id: String,
-            title: Text,
+            title: Title,
             updated: Date,
-            authors: [Person],
+            authors: [Author],
             entries: [Entry],
             links: [Link],
             categories: [Category],
-            contributors: [Person],
+            contributors: [Contributor],
             generator: Generator?,
             icon: String?,
             logo: String?,
-            rights: Text?,
-            subtitle: Text?
+            rights: Rights?,
+            subtitle: Subtitle?,
+            base: String?,
+            lang: String?
         ) -> Feed {
             Feed(
                 uncheckedId: RFC_3987.IRI(unchecked: id),
@@ -189,24 +213,28 @@ extension RFC_4287 {
                 uncheckedIcon: icon.map { RFC_3987.IRI(unchecked: $0) },
                 uncheckedLogo: logo.map { RFC_3987.IRI(unchecked: $0) },
                 uncheckedRights: rights,
-                uncheckedSubtitle: subtitle
+                uncheckedSubtitle: subtitle,
+                uncheckedBase: base.map { RFC_3987.IRI(unchecked: $0) },
+                uncheckedLang: lang
             )
         }
 
         private init(
             uncheckedId id: RFC_3987.IRI,
-            uncheckedTitle title: Text,
+            uncheckedTitle title: Title,
             uncheckedUpdated updated: Date,
-            uncheckedAuthors authors: [Person],
+            uncheckedAuthors authors: [Author],
             uncheckedEntries entries: [Entry],
             uncheckedLinks links: [Link],
             uncheckedCategories categories: [Category],
-            uncheckedContributors contributors: [Person],
+            uncheckedContributors contributors: [Contributor],
             uncheckedGenerator generator: Generator?,
             uncheckedIcon icon: RFC_3987.IRI?,
             uncheckedLogo logo: RFC_3987.IRI?,
-            uncheckedRights rights: Text?,
-            uncheckedSubtitle subtitle: Text?
+            uncheckedRights rights: Rights?,
+            uncheckedSubtitle subtitle: Subtitle?,
+            uncheckedBase base: RFC_3987.IRI?,
+            uncheckedLang lang: String?
         ) {
             self.id = id
             self.title = title
@@ -221,6 +249,8 @@ extension RFC_4287 {
             self.logo = logo
             self.rights = rights
             self.subtitle = subtitle
+            self.base = base
+            self.lang = lang
         }
     }
 }

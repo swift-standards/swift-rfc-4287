@@ -21,20 +21,36 @@ extension RFC_4287 {
         /// conforming to the "addr-spec" production in RFC 2822.
         public let email: RFC_2822.AddrSpec?
 
+        /// Base IRI for resolving relative references (xml:base)
+        ///
+        /// Per RFC 4287 Section 2, any element may have an xml:base attribute.
+        public let base: RFC_3987.IRI?
+
+        /// Language of the person construct (xml:lang)
+        ///
+        /// Per RFC 4287 Section 2, any element may have an xml:lang attribute.
+        public let lang: String?
+
         /// Creates a new person construct
         ///
         /// - Parameters:
         ///   - name: The person's name
         ///   - uri: An optional IRI for the person
         ///   - email: An optional email address (RFC 2822 AddrSpec)
+        ///   - base: Base IRI for resolving relative references
+        ///   - lang: Language of the person construct
         public init(
             name: String,
             uri: RFC_3987.IRI? = nil,
-            email: RFC_2822.AddrSpec? = nil
+            email: RFC_2822.AddrSpec? = nil,
+            base: RFC_3987.IRI? = nil,
+            lang: String? = nil
         ) {
             self.name = name
             self.uri = uri
             self.email = email
+            self.base = base
+            self.lang = lang
         }
 
         /// Creates a new person construct with IRI.Representable URI (convenience)
@@ -45,12 +61,16 @@ extension RFC_4287 {
         ///   - name: The person's name
         ///   - uri: An optional IRI-representable value (e.g., URL)
         ///   - email: An optional email address (RFC 2822 AddrSpec)
+        ///   - base: Base IRI for resolving relative references (e.g., URL)
+        ///   - lang: Language of the person construct
         public init(
             name: String,
             uri: (any RFC_3987.IRI.Representable)?,
-            email: RFC_2822.AddrSpec? = nil
+            email: RFC_2822.AddrSpec? = nil,
+            base: (any RFC_3987.IRI.Representable)? = nil,
+            lang: String? = nil
         ) {
-            self.init(name: name, uri: uri?.iri, email: email)
+            self.init(name: name, uri: uri?.iri, email: email, base: base?.iri, lang: lang)
         }
 
         /// Creates a new person construct with string email (convenience)
@@ -59,11 +79,15 @@ extension RFC_4287 {
         ///   - name: The person's name
         ///   - uri: An optional IRI string for the person
         ///   - emailString: Email address as string (will be parsed as local@domain)
+        ///   - base: Base IRI string for resolving relative references
+        ///   - lang: Language of the person construct
         /// - Throws: RFC_2822.ValidationError if email is invalid
         public init(
             name: String,
             uri: String? = nil,
-            emailString: String
+            emailString: String,
+            base: String? = nil,
+            lang: String? = nil
         ) throws {
             // Parse email into local-part and domain
             let components = emailString.split(separator: "@", maxSplits: 1)
@@ -74,7 +98,9 @@ extension RFC_4287 {
                 localPart: String(components[0]),
                 domain: String(components[1])
             )
-            self.init(name: name, uri: uri.map { RFC_3987.IRI(unchecked: $0) }, email: addrSpec)
+            let iri: RFC_3987.IRI? = uri.map { RFC_3987.IRI(unchecked: $0) }
+            let baseIRI: RFC_3987.IRI? = base.map { RFC_3987.IRI(unchecked: $0) }
+            self.init(name: name, uri: iri, email: addrSpec, base: baseIRI, lang: lang)
         }
     }
 }
@@ -85,6 +111,8 @@ extension RFC_4287.Person: Codable {
         case name
         case uri
         case email
+        case base
+        case lang
     }
 
     public init(from decoder: Decoder) throws {
@@ -111,6 +139,11 @@ extension RFC_4287.Person: Codable {
         } else {
             email = nil
         }
+
+        base = try container.decodeIfPresent(String.self, forKey: .base).map {
+            RFC_3987.IRI(unchecked: $0)
+        }
+        lang = try container.decodeIfPresent(String.self, forKey: .lang)
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -121,6 +154,8 @@ extension RFC_4287.Person: Codable {
         if let email = email {
             try container.encode(email.description, forKey: .email)
         }
+        try container.encodeIfPresent(base?.value, forKey: .base)
+        try container.encodeIfPresent(lang, forKey: .lang)
     }
 }
 

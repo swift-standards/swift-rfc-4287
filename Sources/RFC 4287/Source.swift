@@ -7,13 +7,13 @@ extension RFC_4287 {
     /// Contains metadata from the source feed when an entry is copied from one feed into another.
     public struct Source: Hashable, Sendable, Codable {
         /// Feed authors
-        public let authors: [Person]
+        public let authors: [Author]
 
         /// Feed categories
         public let categories: [Category]
 
         /// Feed contributors
-        public let contributors: [Person]
+        public let contributors: [Contributor]
 
         /// Generator information
         public let generator: Generator?
@@ -31,16 +31,26 @@ extension RFC_4287 {
         public let logo: RFC_3987.IRI?
 
         /// Feed rights
-        public let rights: Text?
+        public let rights: Rights?
 
         /// Feed subtitle
-        public let subtitle: Text?
+        public let subtitle: Subtitle?
 
         /// Feed title
-        public let title: Text?
+        public let title: Title?
 
         /// Last updated timestamp
         public let updated: Date?
+
+        /// Base IRI for resolving relative references (xml:base)
+        ///
+        /// Per RFC 4287 Section 2, any element may have an xml:base attribute.
+        public let base: RFC_3987.IRI?
+
+        /// Language of the source (xml:lang)
+        ///
+        /// Per RFC 4287 Section 2, any element may have an xml:lang attribute.
+        public let lang: String?
 
         /// Creates a new source construct
         ///
@@ -57,19 +67,23 @@ extension RFC_4287 {
         ///   - subtitle: Feed subtitle
         ///   - title: Feed title
         ///   - updated: Last updated timestamp
+        ///   - base: Base IRI for resolving relative references
+        ///   - lang: Language of the source
         public init(
-            authors: [Person] = [],
+            authors: [Author] = [],
             categories: [Category] = [],
-            contributors: [Person] = [],
+            contributors: [Contributor] = [],
             generator: Generator? = nil,
             icon: RFC_3987.IRI? = nil,
             id: RFC_3987.IRI? = nil,
             links: [Link] = [],
             logo: RFC_3987.IRI? = nil,
-            rights: Text? = nil,
-            subtitle: Text? = nil,
-            title: Text? = nil,
-            updated: Date? = nil
+            rights: Rights? = nil,
+            subtitle: Subtitle? = nil,
+            title: Title? = nil,
+            updated: Date? = nil,
+            base: RFC_3987.IRI? = nil,
+            lang: String? = nil
         ) {
             self.authors = authors
             self.categories = categories
@@ -83,6 +97,8 @@ extension RFC_4287 {
             self.subtitle = subtitle
             self.title = title
             self.updated = updated
+            self.base = base
+            self.lang = lang
         }
 
         /// Creates a new source construct with IRI.Representable types (convenience)
@@ -102,19 +118,23 @@ extension RFC_4287 {
         ///   - subtitle: Feed subtitle
         ///   - title: Feed title
         ///   - updated: Last updated timestamp
+        ///   - base: Base IRI for resolving relative references (e.g., URL)
+        ///   - lang: Language of the source
         public init(
-            authors: [Person] = [],
+            authors: [Author] = [],
             categories: [Category] = [],
-            contributors: [Person] = [],
+            contributors: [Contributor] = [],
             generator: Generator? = nil,
             icon: (any RFC_3987.IRI.Representable)? = nil,
             id: (any RFC_3987.IRI.Representable)? = nil,
             links: [Link] = [],
             logo: (any RFC_3987.IRI.Representable)? = nil,
-            rights: Text? = nil,
-            subtitle: Text? = nil,
-            title: Text? = nil,
-            updated: Date? = nil
+            rights: Rights? = nil,
+            subtitle: Subtitle? = nil,
+            title: Title? = nil,
+            updated: Date? = nil,
+            base: (any RFC_3987.IRI.Representable)? = nil,
+            lang: String? = nil
         ) {
             self.init(
                 authors: authors,
@@ -128,7 +148,9 @@ extension RFC_4287 {
                 rights: rights,
                 subtitle: subtitle,
                 title: title,
-                updated: updated
+                updated: updated,
+                base: base?.iri,
+                lang: lang
             )
         }
     }
