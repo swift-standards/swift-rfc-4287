@@ -7,7 +7,7 @@ extension RFC_4287 {
     /// Represents an individual entry in an Atom feed.
     public struct Entry: Hashable, Sendable, Codable {
         /// Entry authors (at least one required if feed has no authors)
-        public let authors: [Person]
+        public let authors: [Author]
 
         /// Entry categories
         public let categories: [Category]
@@ -16,7 +16,7 @@ extension RFC_4287 {
         public let content: Content?
 
         /// Entry contributors
-        public let contributors: [Person]
+        public let contributors: [Contributor]
 
         /// Permanent, universally unique identifier (required)
         ///
@@ -34,16 +34,26 @@ extension RFC_4287 {
         public let published: Date?
 
         /// Copyright and licensing information (optional)
-        public let rights: Text?
+        public let rights: Rights?
 
         /// Source feed metadata (optional)
         public let source: Source?
 
         /// Summary or excerpt (optional)
-        public let summary: Text?
+        public let summary: Summary?
 
         /// Human-readable title (required)
-        public let title: Text
+        public let title: Title
+
+        /// Base IRI for resolving relative references (xml:base)
+        ///
+        /// Per RFC 4287 Section 2, any element may have an xml:base attribute.
+        public let base: RFC_3987.IRI?
+
+        /// Language of the entry content (xml:lang)
+        ///
+        /// Per RFC 4287 Section 2, any element may have an xml:lang attribute.
+        public let lang: String?
 
         /// Creates a new entry with validation
         ///
@@ -60,21 +70,25 @@ extension RFC_4287 {
         ///   - rights: Rights information
         ///   - source: Source feed metadata
         ///   - summary: Entry summary
+        ///   - base: Base IRI for resolving relative references
+        ///   - lang: Language of the entry content
         ///
         /// - Returns: A validated entry, or nil if validation fails
         public init?(
             id: RFC_3987.IRI,
-            title: Text,
+            title: Title,
             updated: Date,
-            authors: [Person] = [],
+            authors: [Author] = [],
             content: Content? = nil,
             links: [Link] = [],
             categories: [Category] = [],
-            contributors: [Person] = [],
+            contributors: [Contributor] = [],
             published: Date? = nil,
-            rights: Text? = nil,
+            rights: Rights? = nil,
             source: Source? = nil,
-            summary: Text? = nil
+            summary: Summary? = nil,
+            base: RFC_3987.IRI? = nil,
+            lang: String? = nil
         ) {
             // RFC 4287 Section 4.1.2: Entry must have content OR an alternate link
             let hasContent = content != nil
@@ -106,6 +120,8 @@ extension RFC_4287 {
             self.rights = rights
             self.source = source
             self.summary = summary
+            self.base = base
+            self.lang = lang
         }
 
         /// Creates a new entry with validation using IRI.Representable id (convenience)
@@ -125,21 +141,25 @@ extension RFC_4287 {
         ///   - rights: Rights information
         ///   - source: Source feed metadata
         ///   - summary: Entry summary
+        ///   - base: Base IRI for resolving relative references (e.g., URL)
+        ///   - lang: Language of the entry content
         ///
         /// - Returns: A validated entry, or nil if validation fails
         public init?(
             id: any RFC_3987.IRI.Representable,
-            title: Text,
+            title: Title,
             updated: Date,
-            authors: [Person] = [],
+            authors: [Author] = [],
             content: Content? = nil,
             links: [Link] = [],
             categories: [Category] = [],
-            contributors: [Person] = [],
+            contributors: [Contributor] = [],
             published: Date? = nil,
-            rights: Text? = nil,
+            rights: Rights? = nil,
             source: Source? = nil,
-            summary: Text? = nil
+            summary: Summary? = nil,
+            base: (any RFC_3987.IRI.Representable)? = nil,
+            lang: String? = nil
         ) {
             self.init(
                 id: id.iri,
@@ -153,24 +173,28 @@ extension RFC_4287 {
                 published: published,
                 rights: rights,
                 source: source,
-                summary: summary
+                summary: summary,
+                base: base?.iri,
+                lang: lang
             )
         }
 
         /// Creates a new entry without validation (for internal use, e.g. decoding)
         internal static func makeUnchecked(
             id: String,
-            title: Text,
+            title: Title,
             updated: Date,
-            authors: [Person],
+            authors: [Author],
             content: Content?,
             links: [Link],
             categories: [Category],
-            contributors: [Person],
+            contributors: [Contributor],
             published: Date?,
-            rights: Text?,
+            rights: Rights?,
             source: Source?,
-            summary: Text?
+            summary: Summary?,
+            base: String?,
+            lang: String?
         ) -> Entry {
             Entry(
                 uncheckedId: RFC_3987.IRI(unchecked: id),
@@ -184,23 +208,27 @@ extension RFC_4287 {
                 uncheckedPublished: published,
                 uncheckedRights: rights,
                 uncheckedSource: source,
-                uncheckedSummary: summary
+                uncheckedSummary: summary,
+                uncheckedBase: base.map { RFC_3987.IRI(unchecked: $0) },
+                uncheckedLang: lang
             )
         }
 
         private init(
             uncheckedId id: RFC_3987.IRI,
-            uncheckedTitle title: Text,
+            uncheckedTitle title: Title,
             uncheckedUpdated updated: Date,
-            uncheckedAuthors authors: [Person],
+            uncheckedAuthors authors: [Author],
             uncheckedContent content: Content?,
             uncheckedLinks links: [Link],
             uncheckedCategories categories: [Category],
-            uncheckedContributors contributors: [Person],
+            uncheckedContributors contributors: [Contributor],
             uncheckedPublished published: Date?,
-            uncheckedRights rights: Text?,
+            uncheckedRights rights: Rights?,
             uncheckedSource source: Source?,
-            uncheckedSummary summary: Text?
+            uncheckedSummary summary: Summary?,
+            uncheckedBase base: RFC_3987.IRI?,
+            uncheckedLang lang: String?
         ) {
             self.id = id
             self.title = title
@@ -214,6 +242,8 @@ extension RFC_4287 {
             self.rights = rights
             self.source = source
             self.summary = summary
+            self.base = base
+            self.lang = lang
         }
     }
 }

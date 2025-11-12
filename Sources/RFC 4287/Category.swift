@@ -15,20 +15,36 @@ extension RFC_4287 {
         /// Human-readable label for the category (optional)
         public let label: String?
 
+        /// Base IRI for resolving relative references (xml:base)
+        ///
+        /// Per RFC 4287 Section 2, any element may have an xml:base attribute.
+        public let base: RFC_3987.IRI?
+
+        /// Language of the category (xml:lang)
+        ///
+        /// Per RFC 4287 Section 2, any element may have an xml:lang attribute.
+        public let lang: String?
+
         /// Creates a new category
         ///
         /// - Parameters:
         ///   - term: The category term
         ///   - scheme: The categorization scheme IRI
         ///   - label: A human-readable label
+        ///   - base: Base IRI for resolving relative references
+        ///   - lang: Language of the category
         public init(
             term: String,
             scheme: RFC_3987.IRI? = nil,
-            label: String? = nil
+            label: String? = nil,
+            base: RFC_3987.IRI? = nil,
+            lang: String? = nil
         ) {
             self.term = term
             self.scheme = scheme
             self.label = label
+            self.base = base
+            self.lang = lang
         }
 
         /// Creates a new category with IRI.Representable scheme (convenience)
@@ -39,12 +55,16 @@ extension RFC_4287 {
         ///   - term: The category term
         ///   - scheme: The categorization scheme IRI (e.g., URL)
         ///   - label: A human-readable label
+        ///   - base: Base IRI for resolving relative references (e.g., URL)
+        ///   - lang: Language of the category
         public init(
             term: String,
             scheme: (any RFC_3987.IRI.Representable)?,
-            label: String? = nil
+            label: String? = nil,
+            base: (any RFC_3987.IRI.Representable)? = nil,
+            lang: String? = nil
         ) {
-            self.init(term: term, scheme: scheme?.iri, label: label)
+            self.init(term: term, scheme: scheme?.iri, label: label, base: base?.iri, lang: lang)
         }
     }
 }

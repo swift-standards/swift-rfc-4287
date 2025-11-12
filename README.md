@@ -1,6 +1,6 @@
 # swift-rfc-4287
 
-[![CI](https://github.com/swift-web-standards/swift-rfc-4287/workflows/CI/badge.svg)](https://github.com/swift-web-standards/swift-rfc-4287/actions/workflows/ci.yml)
+[![CI](https://github.com/swift-standards/swift-rfc-4287/workflows/CI/badge.svg)](https://github.com/swift-standards/swift-rfc-4287/actions/workflows/ci.yml)
 ![Development Status](https://img.shields.io/badge/status-active--development-blue.svg)
 
 Type-safe Atom feed generation and parsing for Swift (RFC 4287 implementation).
@@ -14,8 +14,7 @@ swift-rfc-4287 provides complete Atom Syndication Format support as defined in R
 - **Complete RFC 4287 Support**: All required and optional feed and entry elements per RFC 4287 specification
 - **Type Safety**: Compile-time validation with Hashable, Sendable, Codable conformance
 - **Validation**: Failable initializers enforce Atom requirements (entries require content OR alternate link)
-- **XML Generation**: Direct XML output with proper escaping and RFC 3339 date formatting
-- **XML Parsing**: XMLParser-based decoding from Atom XML strings
+- **Codable Support**: JSON encoding/decoding support via Codable conformance
 - **Swift 6.0 Concurrency**: Strict concurrency mode with complete Sendable conformance
 
 ## Installation
@@ -24,7 +23,7 @@ Add swift-rfc-4287 to your Package.swift dependencies:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/swift-web-standards/swift-rfc-4287", from: "0.1.0")
+    .package(url: "https://github.com/swift-standards/swift-rfc-4287", from: "0.1.0")
 ]
 ```
 
@@ -98,45 +97,37 @@ let feed = RFC_4287.Feed(
     ]
 )
 
-// Generate XML
-let xmlString = feed!.toXML()
-print(xmlString)
+print(feed?.title.value)  // "Example Feed"
+print(feed?.entries.count)  // 1
 ```
 
 ## Usage Examples
 
-### XML Parsing
+### Creating Entries with Links
 
 ```swift
 import RFC_4287
 
-let atomXML = """
-<?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
-    <id>urn:uuid:feed-id</id>
-    <title>Example Feed</title>
-    <updated>2021-01-01T00:00:00Z</updated>
-    <author>
-        <name>John Doe</name>
-    </author>
-    <entry>
-        <id>urn:uuid:entry-1</id>
-        <title>First Entry</title>
-        <updated>2021-01-01T12:00:00Z</updated>
-        <content type="text">Entry content</content>
-    </entry>
-</feed>
-"""
+let entry = RFC_4287.Entry(
+    id: "urn:uuid:entry-123",
+    title: "Blog Post",
+    updated: Date(),
+    links: [
+        RFC_4287.Link(
+            href: "https://example.com/posts/123",
+            rel: .alternate,
+            type: "text/html"
+        )
+    ]
+)
 
-let feed = try RFC_4287.Feed(xmlString: atomXML)
-print(feed.title.value)  // "Example Feed"
-print(feed.entries.count)  // 1
+print(entry?.links.first?.href.value)  // "https://example.com/posts/123"
 ```
 
 ## Related Packages
 
-- [swift-rss](https://github.com/swift-web-standards/swift-rss): Type-safe RSS 2.0 feed generation and parsing for Swift
-- [swift-json-feed](https://github.com/swift-web-standards/swift-json-feed): Type-safe JSON Feed generation and parsing for Swift
+- [swift-rss](https://github.com/swift-standards/swift-rss): Type-safe RSS 2.0 feed generation and parsing for Swift
+- [swift-json-feed](https://github.com/swift-standards/swift-json-feed): Type-safe JSON Feed generation and parsing for Swift
 - [swift-syndication](https://github.com/coenttb/swift-syndication): Unified syndication API supporting RSS, Atom, and JSON Feed with format conversion
 
 ## License

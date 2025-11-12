@@ -7,34 +7,46 @@ extension RFC_4287 {
     /// Links define references to Web resources.
     public struct Link: Hashable, Sendable, Codable {
         /// Link relation types as defined in RFC 4287 and extensions
-        public enum Relation: Hashable, Sendable, Codable {
-            case alternate
-            case related
-            case `self`
-            case enclosure
-            case via
-            case custom(String)
+        ///
+        /// This struct allows for both standard relation types and custom values,
+        /// avoiding the enum-with-custom-case code smell.
+        public struct Relation: Hashable, Sendable, Codable, ExpressibleByStringLiteral {
+            /// The string value of the relation
+            public let value: String
 
-            public var stringValue: String {
-                switch self {
-                case .alternate: return "alternate"
-                case .related: return "related"
-                case .`self`: return "self"
-                case .enclosure: return "enclosure"
-                case .via: return "via"
-                case .custom(let value): return value
-                }
+            /// Creates a relation with a custom value
+            ///
+            /// - Parameter value: The relation type string
+            public init(_ value: String) {
+                self.value = value
             }
 
-            public init(stringValue: String) {
-                switch stringValue {
-                case "alternate": self = .alternate
-                case "related": self = .related
-                case "self": self = .`self`
-                case "enclosure": self = .enclosure
-                case "via": self = .via
-                default: self = .custom(stringValue)
-                }
+            // MARK: - Standard Relations (RFC 4287)
+
+            /// Alternate representation
+            public static let alternate = Relation("alternate")
+
+            /// Related resource
+            public static let related = Relation("related")
+
+            /// Self-reference
+            public static let `self` = Relation("self")
+
+            /// Enclosed resource (e.g., podcast episode)
+            public static let enclosure = Relation("enclosure")
+
+            /// Source of information
+            public static let via = Relation("via")
+
+            // MARK: - Extension Relations
+
+            /// Comments/replies (RFC 4685 - Atom Threading Extensions)
+            public static let replies = Relation("replies")
+
+            // MARK: - ExpressibleByStringLiteral
+
+            public init(stringLiteral value: String) {
+                self.init(value)
             }
 
             // MARK: - Codable
@@ -42,12 +54,12 @@ extension RFC_4287 {
             public init(from decoder: Decoder) throws {
                 let container = try decoder.singleValueContainer()
                 let string = try container.decode(String.self)
-                self.init(stringValue: string)
+                self.init(string)
             }
 
             public func encode(to encoder: Encoder) throws {
                 var container = encoder.singleValueContainer()
-                try container.encode(stringValue)
+                try container.encode(value)
             }
         }
 
@@ -76,6 +88,16 @@ extension RFC_4287 {
         /// The length of the resource in bytes (optional)
         public let length: Int?
 
+        /// Base IRI for resolving relative references (xml:base)
+        ///
+        /// Per RFC 4287 Section 2, any element may have an xml:base attribute.
+        public let base: RFC_3987.IRI?
+
+        /// Language of the link (xml:lang)
+        ///
+        /// Per RFC 4287 Section 2, any element may have an xml:lang attribute.
+        public let lang: String?
+
         /// Creates a new link
         ///
         /// - Parameters:
@@ -85,13 +107,17 @@ extension RFC_4287 {
         ///   - hreflang: The language
         ///   - title: A title for the link
         ///   - length: The length in bytes
+        ///   - base: Base IRI for resolving relative references
+        ///   - lang: Language of the link
         public init(
             href: RFC_3987.IRI,
             rel: Relation? = nil,
             type: String? = nil,
             hreflang: String? = nil,
             title: String? = nil,
-            length: Int? = nil
+            length: Int? = nil,
+            base: RFC_3987.IRI? = nil,
+            lang: String? = nil
         ) {
             self.href = href
             self.rel = rel
@@ -99,6 +125,8 @@ extension RFC_4287 {
             self.hreflang = hreflang
             self.title = title
             self.length = length
+            self.base = base
+            self.lang = lang
         }
 
         /// Creates a new link with IRI.Representable href (convenience)
@@ -112,15 +140,19 @@ extension RFC_4287 {
         ///   - hreflang: The language
         ///   - title: A title for the link
         ///   - length: The length in bytes
+        ///   - base: Base IRI for resolving relative references (e.g., URL)
+        ///   - lang: Language of the link
         public init(
             href: any RFC_3987.IRI.Representable,
             rel: Relation? = nil,
             type: String? = nil,
             hreflang: String? = nil,
             title: String? = nil,
-            length: Int? = nil
+            length: Int? = nil,
+            base: (any RFC_3987.IRI.Representable)? = nil,
+            lang: String? = nil
         ) {
-            self.init(href: href.iri, rel: rel, type: type, hreflang: hreflang, title: title, length: length)
+            self.init(href: href.iri, rel: rel, type: type, hreflang: hreflang, title: title, length: length, base: base?.iri, lang: lang)
         }
 
         /// Returns true if this link should be treated as an "alternate" relation

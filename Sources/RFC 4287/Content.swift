@@ -54,15 +54,34 @@ extension RFC_4287 {
         /// The source IRI (when content is out-of-line)
         public let src: RFC_3987.IRI?
 
+        /// Base IRI for resolving relative references (xml:base)
+        ///
+        /// Per RFC 4287 Section 2, any element may have an xml:base attribute.
+        public let base: RFC_3987.IRI?
+
+        /// Language of the content (xml:lang)
+        ///
+        /// Per RFC 4287 Section 2, any element may have an xml:lang attribute.
+        public let lang: String?
+
         /// Creates inline content
         ///
         /// - Parameters:
         ///   - value: The content
         ///   - type: The content type
-        public init(value: String, type: ContentType = .text) {
+        ///   - base: Base IRI for resolving relative references
+        ///   - lang: Language of the content
+        public init(
+            value: String,
+            type: ContentType = .text,
+            base: (any RFC_3987.IRI.Representable)? = nil,
+            lang: String? = nil
+        ) {
             self.value = value
             self.type = type
             self.src = nil
+            self.base = base?.iri
+            self.lang = lang
         }
 
         /// Creates inline binary content from data
@@ -70,13 +89,22 @@ extension RFC_4287 {
         /// - Parameters:
         ///   - data: The binary content data (will be base64-encoded)
         ///   - mediaType: The MIME type of the content
+        ///   - base: Base IRI for resolving relative references
+        ///   - lang: Language of the content
         ///
         /// This initializer automatically base64-encodes the data as required by RFC 4287
         /// for binary media types.
-        public init(data: Data, mediaType: String) {
+        public init(
+            data: Data,
+            mediaType: String,
+            base: (any RFC_3987.IRI.Representable)? = nil,
+            lang: String? = nil
+        ) {
             self.value = data.base64EncodedString()
             self.type = .media(mediaType)
             self.src = nil
+            self.base = base?.iri
+            self.lang = lang
         }
 
         /// Creates out-of-line content
@@ -84,10 +112,19 @@ extension RFC_4287 {
         /// - Parameters:
         ///   - src: The IRI of the content
         ///   - type: The content type
-        public init(src: RFC_3987.IRI, type: ContentType = .text) {
+        ///   - base: Base IRI for resolving relative references
+        ///   - lang: Language of the content
+        public init(
+            src: RFC_3987.IRI,
+            type: ContentType = .text,
+            base: RFC_3987.IRI? = nil,
+            lang: String? = nil
+        ) {
             self.value = nil
             self.type = type
             self.src = src
+            self.base = base
+            self.lang = lang
         }
 
         /// Creates out-of-line content with IRI.Representable source (convenience)
@@ -97,8 +134,15 @@ extension RFC_4287 {
         /// - Parameters:
         ///   - src: The IRI of the content (e.g., URL)
         ///   - type: The content type
-        public init(src: any RFC_3987.IRI.Representable, type: ContentType = .text) {
-            self.init(src: src.iri, type: type)
+        ///   - base: Base IRI for resolving relative references (e.g., URL)
+        ///   - lang: Language of the content
+        public init(
+            src: any RFC_3987.IRI.Representable,
+            type: ContentType = .text,
+            base: (any RFC_3987.IRI.Representable)? = nil,
+            lang: String? = nil
+        ) {
+            self.init(src: src.iri, type: type, base: base?.iri, lang: lang)
         }
 
         /// Determines if this content type requires base64 encoding per RFC 4287 Section 4.1.3.3

@@ -1,4 +1,5 @@
 import Foundation
+import RFC_3987
 
 extension RFC_4287 {
     /// A text construct as defined in RFC 4287 Section 3.1
@@ -19,14 +20,33 @@ extension RFC_4287 {
         /// The content of this text construct
         public let value: String
 
+        /// Base IRI for resolving relative references (xml:base)
+        ///
+        /// Per RFC 4287 Section 2, any element may have an xml:base attribute.
+        public let base: RFC_3987.IRI?
+
+        /// Language of the text content (xml:lang)
+        ///
+        /// Per RFC 4287 Section 2, any element may have an xml:lang attribute.
+        public let lang: String?
+
         /// Creates a new text construct
         ///
         /// - Parameters:
         ///   - value: The text content
         ///   - type: The type of content (defaults to .text)
-        public init(_ value: String, type: ContentType = .text) {
+        ///   - base: Base IRI for resolving relative references
+        ///   - lang: Language of the text content
+        public init(
+            _ value: String,
+            type: ContentType = .text,
+            base: (any RFC_3987.IRI.Representable)? = nil,
+            lang: String? = nil
+        ) {
             self.value = value
             self.type = type
+            self.base = base?.iri
+            self.lang = lang
         }
     }
 }
