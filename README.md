@@ -79,7 +79,6 @@ let feed = RFC_4287.Feed(id: url, title: "My Feed", updated: Date())
 
 ```swift
 import RFC_4287
-import Foundation
 
 // Create an Atom feed
 let feed = RFC_4287.Feed(

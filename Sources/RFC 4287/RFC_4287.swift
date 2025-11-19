@@ -1,4 +1,3 @@
-import Foundation
 @_exported import RFC_3987
 
 /// RFC 4287: The Atom Syndication Format

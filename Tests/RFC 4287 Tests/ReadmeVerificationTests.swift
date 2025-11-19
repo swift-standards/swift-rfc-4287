@@ -1,5 +1,4 @@
 import Testing
-import Foundation
 @testable import RFC_4287
 
 @Suite("README Verification")

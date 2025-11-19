@@ -1,4 +1,3 @@
-import Foundation
 
 extension Date {
     /// Formats the date according to RFC 3339 (used by Atom)
