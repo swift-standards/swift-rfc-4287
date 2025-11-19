@@ -8,7 +8,7 @@ extension String {
 
 extension Target.Dependency {
     static var rfc4287: Self { .target(name: .rfc4287) }
-    static var rfc2822: Self { .product(name: "RFC_2822", package: "swift-rfc-2822") }
+    static var rfc2822: Self { .product(name: "RFC 2822", package: "swift-rfc-2822") }
     static var rfc3987: Self { .product(name: "RFC 3987", package: "swift-rfc-3987") }
 }
 
