@@ -1,11 +1,11 @@
 import Testing
 @testable import RFC_4287
 
-@Suite("README Verification")
-struct ReadmeVerificationTests {
+@Suite
+struct `README Verification` {
 
-    @Test("String literal feed creation (README line 64-68)")
-    func stringLiteralExample() throws {
+    @Test
+    func `String literal feed creation (README line 64-68)`() throws {
         // String literals (recommended - clean and simple)
         let feed = RFC_4287.Feed(
             id: "https://example.com/feed",
@@ -18,8 +18,8 @@ struct ReadmeVerificationTests {
         #expect(feed?.title.value == "My Feed")
     }
 
-    @Test("Explicit IRI feed creation (README line 70-72)")
-    func explicitIRIExample() throws {
+    @Test
+    func `Explicit IRI feed creation (README line 70-72)`() throws {
         // Explicit IRI type
         let id = try RFC_3987.IRI("https://example.com/feed")
         let feed = RFC_4287.Feed(id: id, title: "My Feed", updated: Date())
@@ -28,8 +28,8 @@ struct ReadmeVerificationTests {
         #expect(feed?.id == id)
     }
 
-    @Test("Foundation URL feed creation (README line 74-76)")
-    func foundationURLExample() throws {
+    @Test
+    func `Foundation URL feed creation (README line 74-76)`() throws {
         // Foundation URL (via IRI.Representable)
         let url = URL(string: "https://example.com/feed")!
         let feed = RFC_4287.Feed(id: url, title: "My Feed", updated: Date())
@@ -38,8 +38,8 @@ struct ReadmeVerificationTests {
         #expect(feed?.id.value == "https://example.com/feed")
     }
 
-    @Test("Quick Start example (README line 85-101)")
-    func quickStartExample() throws {
+    @Test
+    func `Quick Start example (README line 85-101)`() throws {
         // Create an Atom feed
         let feed = RFC_4287.Feed(
             id: "urn:uuid:60a76c80-d399-11d9-b93C-0003939e0af6",
@@ -62,8 +62,8 @@ struct ReadmeVerificationTests {
         #expect(feed?.entries.first?.title.value == "First Post")
     }
 
-    @Test("Creating entries with links (README line 111-124)")
-    func entriesWithLinksExample() throws {
+    @Test
+    func `Creating entries with links (README line 111-124)`() throws {
         let entry = RFC_4287.Entry(
             id: "urn:uuid:entry-123",
             title: "Blog Post",

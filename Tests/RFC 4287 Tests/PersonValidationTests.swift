@@ -3,11 +3,11 @@ import Testing
 
 @testable import RFC_4287
 
-@Suite("Person Email Validation")
-struct PersonValidationTests {
+@Suite
+struct `Person Email Validation` {
 
-    @Test("Person with valid email succeeds")
-    func validEmail() throws {
+    @Test
+    func `Person with valid email succeeds`() throws {
         let email = try RFC_2822.AddrSpec(localPart: "john", domain: "example.com")
         let person = RFC_4287.Person(name: "John Doe", uri: nil, email: email)
 
@@ -15,16 +15,16 @@ struct PersonValidationTests {
         #expect(person.email?.description == "john@example.com")
     }
 
-    @Test("Person with nil email succeeds")
-    func nilEmail() {
+    @Test
+    func `Person with nil email succeeds`() {
         let person = RFC_4287.Person(name: "Jane Doe", uri: nil, email: nil)
 
         #expect(person.name == "Jane Doe")
         #expect(person.email == nil)
     }
 
-    @Test("Person with URI and email")
-    func withURIAndEmail() throws {
+    @Test
+    func `Person with URI and email`() throws {
         let email = try RFC_2822.AddrSpec(localPart: "contact", domain: "example.org")
         let person = RFC_4287.Person(
             name: "Contact Person",
@@ -37,8 +37,8 @@ struct PersonValidationTests {
         #expect(person.email?.description == "contact@example.org")
     }
 
-    @Test("Person with convenience emailString initializer")
-    func emailStringInit() throws {
+    @Test
+    func `Person with convenience emailString initializer`() throws {
         let person = try RFC_4287.Person(
             name: "Test User",
             uri: nil,
@@ -49,8 +49,8 @@ struct PersonValidationTests {
         #expect(person.email?.description == "test@example.com")
     }
 
-    @Test("Invalid email string throws")
-    func invalidEmailString() {
+    @Test
+    func `Invalid email string throws`() {
         #expect(throws: RFC_2822.ValidationError.self) {
             try RFC_4287.Person(
                 name: "Invalid",
@@ -60,16 +60,16 @@ struct PersonValidationTests {
         }
     }
 
-    @Test("Email with special characters in local-part")
-    func specialCharactersEmail() throws {
+    @Test
+    func `Email with special characters in local-part`() throws {
         let email = try RFC_2822.AddrSpec(localPart: "user+tag", domain: "example.com")
         let person = RFC_4287.Person(name: "Tagged User", uri: nil, email: email)
 
         #expect(person.email?.description == "user+tag@example.com")
     }
 
-    @Test("Email with subdomain")
-    func subdomainEmail() throws {
+    @Test
+    func `Email with subdomain`() throws {
         let email = try RFC_2822.AddrSpec(localPart: "admin", domain: "mail.example.com")
         let person = RFC_4287.Person(name: "Admin", uri: nil, email: email)
 
@@ -77,11 +77,11 @@ struct PersonValidationTests {
     }
 }
 
-@Suite("Person Codable with Email")
-struct PersonCodableTests {
+@Suite
+struct `Person Codable with Email` {
 
-    @Test("Encode Person with email")
-    func encodeWithEmail() throws {
+    @Test
+    func `Encode Person with email`() throws {
         let email = try RFC_2822.AddrSpec(localPart: "test", domain: "example.com")
         let person = RFC_4287.Person(name: "Test", uri: nil, email: email)
 
@@ -93,8 +93,8 @@ struct PersonCodableTests {
         #expect(json.contains("\"email\":\"test@example.com\""))
     }
 
-    @Test("Decode Person with email")
-    func decodeWithEmail() throws {
+    @Test
+    func `Decode Person with email`() throws {
         let json = """
             {"name":"Decoder","email":"decode@example.com"}
             """
@@ -106,8 +106,8 @@ struct PersonCodableTests {
         #expect(person.email?.description == "decode@example.com")
     }
 
-    @Test("Decode Person without email")
-    func decodeWithoutEmail() throws {
+    @Test
+    func `Decode Person without email`() throws {
         let json = """
             {"name":"No Email"}
             """
@@ -119,8 +119,8 @@ struct PersonCodableTests {
         #expect(person.email == nil)
     }
 
-    @Test("Decode Person with invalid email format throws")
-    func decodeInvalidEmail() {
+    @Test
+    func `Decode Person with invalid email format throws`() {
         let json = """
             {"name":"Bad","email":"invalid"}
             """
@@ -131,8 +131,8 @@ struct PersonCodableTests {
         }
     }
 
-    @Test("Round-trip encoding preserves email")
-    func roundTrip() throws {
+    @Test
+    func `Round-trip encoding preserves email`() throws {
         let email = try RFC_2822.AddrSpec(localPart: "round", domain: "trip.com")
         let original = RFC_4287.Person(name: "Round Trip", uri: "https://trip.com", email: email)
 
@@ -148,11 +148,11 @@ struct PersonCodableTests {
     }
 }
 
-@Suite("Person IRI.Representable Integration")
-struct PersonIRIIntegrationTests {
+@Suite
+struct `Person IRI.Representable Integration` {
 
-    @Test("Person with IRI from string literal")
-    func iriFromStringLiteral() throws {
+    @Test
+    func `Person with IRI from string literal`() throws {
         let iri: RFC_3987.IRI = "https://example.com/~user"
         let email = try RFC_2822.AddrSpec(localPart: "user", domain: "example.com")
         let person = RFC_4287.Person(name: "User", uri: iri, email: email)
@@ -160,8 +160,8 @@ struct PersonIRIIntegrationTests {
         #expect(person.uri == "https://example.com/~user")
     }
 
-    @Test("Person with Foundation URL via IRI.Representable")
-    func foundationURLSupport() throws {
+    @Test
+    func `Person with Foundation URL via IRI.Representable`() throws {
         let url = URL(string: "https://example.com/~user")!
         let email = try RFC_2822.AddrSpec(localPart: "user", domain: "example.com")
         let person = RFC_4287.Person(name: "User", uri: url, email: email)

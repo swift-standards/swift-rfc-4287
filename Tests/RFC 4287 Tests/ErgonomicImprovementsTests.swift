@@ -2,8 +2,8 @@ import Testing
 
 @testable import RFC_4287
 
-@Suite("Ergonomic Improvements Tests")
-struct ErgonomicImprovementsTests {
+@Suite
+struct `Ergonomic Improvements Tests` {
     @Test func categoryExpressibleByStringLiteral() async throws {
         let category: RFC_4287.Category = "Technology"
         #expect(category.term == "Technology")

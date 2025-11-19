@@ -2,8 +2,8 @@ import Testing
 
 @testable import RFC_4287
 
-@Suite("Date Formatting Tests")
-struct DateFormattingTests {
+@Suite
+struct `Date Formatting Tests` {
     @Test func dateToAtomString() async throws {
         let date = Date(timeIntervalSince1970: 1_609_459_200)  // 2021-01-01 00:00:00 UTC
 
