@@ -1,4 +1,4 @@
-import RFC_2822
+public import RFC_2822
 import RFC_3987
 
 extension RFC_4287 {

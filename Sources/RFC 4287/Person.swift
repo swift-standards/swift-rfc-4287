@@ -1,4 +1,4 @@
-import RFC_2822
+public import RFC_2822
 import RFC_3987
 
 extension RFC_4287 {
@@ -114,7 +114,7 @@ extension RFC_4287.Person: Codable {
         case lang
     }
 
-    public init(from decoder: Decoder) throws {
+    public init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         name = try container.decode(String.self, forKey: .name)
         uri = try container.decodeIfPresent(String.self, forKey: .uri).map {
@@ -145,7 +145,7 @@ extension RFC_4287.Person: Codable {
         lang = try container.decodeIfPresent(String.self, forKey: .lang)
     }
 
-    public func encode(to encoder: Encoder) throws {
+    public func encode(to encoder: any Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(name, forKey: .name)
         try container.encodeIfPresent(uri?.value, forKey: .uri)

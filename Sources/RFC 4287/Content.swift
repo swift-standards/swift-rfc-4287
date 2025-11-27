@@ -32,13 +32,13 @@ extension RFC_4287 {
 
             // MARK: - Codable
 
-            public init(from decoder: Decoder) throws {
+            public init(from decoder: any Decoder) throws {
                 let container = try decoder.singleValueContainer()
                 let string = try container.decode(String.self)
                 self.init(stringValue: string)
             }
 
-            public func encode(to encoder: Encoder) throws {
+            public func encode(to encoder: any Encoder) throws {
                 var container = encoder.singleValueContainer()
                 try container.encode(stringValue)
             }
