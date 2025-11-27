@@ -39,7 +39,7 @@ extension RFC_4287 {
         public let title: Title?
 
         /// Last updated timestamp
-        public let updated: Date?
+        public let updated: RFC_3339.DateTime?
 
         /// Base IRI for resolving relative references (xml:base)
         ///
@@ -80,7 +80,7 @@ extension RFC_4287 {
             rights: Rights? = nil,
             subtitle: Subtitle? = nil,
             title: Title? = nil,
-            updated: Date? = nil,
+            updated: RFC_3339.DateTime? = nil,
             base: RFC_3987.IRI? = nil,
             lang: String? = nil
         ) {
@@ -131,7 +131,7 @@ extension RFC_4287 {
             rights: Rights? = nil,
             subtitle: Subtitle? = nil,
             title: Title? = nil,
-            updated: Date? = nil,
+            updated: RFC_3339.DateTime? = nil,
             base: (any RFC_3987.IRI.Representable)? = nil,
             lang: String? = nil
         ) {

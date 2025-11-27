@@ -80,7 +80,7 @@ extension RFC_4287 {
         ///   - emailString: Email address as string (will be parsed as local@domain)
         ///   - base: Base IRI string for resolving relative references
         ///   - lang: Language of the person construct
-        /// - Throws: RFC_2822.ValidationError if email is invalid
+        /// - Throws: RFC_2822.AddrSpec.Error if email is invalid
         public init(
             name: String,
             uri: String? = nil,
@@ -88,15 +88,8 @@ extension RFC_4287 {
             base: String? = nil,
             lang: String? = nil
         ) throws {
-            // Parse email into local-part and domain
-            let components = emailString.split(separator: "@", maxSplits: 1)
-            guard components.count == 2 else {
-                throw RFC_2822.ValidationError.invalidFieldValue("email", emailString)
-            }
-            let addrSpec = try RFC_2822.AddrSpec(
-                localPart: String(components[0]),
-                domain: String(components[1])
-            )
+            // Parse email using RFC 2822 canonical byte parsing
+            let addrSpec = try RFC_2822.AddrSpec(ascii: emailString.utf8)
             let iri: RFC_3987.IRI? = uri.map { RFC_3987.IRI(unchecked: $0) }
             let baseIRI: RFC_3987.IRI? = base.map { RFC_3987.IRI(unchecked: $0) }
             self.init(name: name, uri: iri, email: addrSpec, base: baseIRI, lang: lang)
@@ -123,18 +116,15 @@ extension RFC_4287.Person: Codable {
 
         // Decode email as string and convert to AddrSpec
         if let emailString = try container.decodeIfPresent(String.self, forKey: .email) {
-            let components = emailString.split(separator: "@", maxSplits: 1)
-            guard components.count == 2 else {
+            do {
+                email = try RFC_2822.AddrSpec(ascii: emailString.utf8)
+            } catch {
                 throw DecodingError.dataCorruptedError(
                     forKey: .email,
                     in: container,
                     debugDescription: "Invalid email format: \(emailString)"
                 )
             }
-            email = try RFC_2822.AddrSpec(
-                localPart: String(components[0]),
-                domain: String(components[1])
-            )
         } else {
             email = nil
         }

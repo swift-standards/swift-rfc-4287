@@ -1,5 +1,12 @@
+import Foundation
 import Testing
 @testable import RFC_4287
+
+// Helper to create current date-time
+private func currentDateTime() throws -> RFC_3339.DateTime {
+    let time = try Time(year: 2024, month: 11, day: 27, hour: 12, minute: 0, second: 0)
+    return RFC_3339.DateTime(time: time, offset: .utc)
+}
 
 @Suite
 struct `README Verification` {
@@ -10,7 +17,7 @@ struct `README Verification` {
         let feed = RFC_4287.Feed(
             id: "https://example.com/feed",
             title: "My Feed",
-            updated: Date()
+            updated: try currentDateTime()
         )
 
         #expect(feed != nil)
@@ -22,7 +29,7 @@ struct `README Verification` {
     func `Explicit IRI feed creation (README line 70-72)`() throws {
         // Explicit IRI type
         let id = try RFC_3987.IRI("https://example.com/feed")
-        let feed = RFC_4287.Feed(id: id, title: "My Feed", updated: Date())
+        let feed = RFC_4287.Feed(id: id, title: "My Feed", updated: try currentDateTime())
 
         #expect(feed != nil)
         #expect(feed?.id == id)
@@ -32,7 +39,7 @@ struct `README Verification` {
     func `Foundation URL feed creation (README line 74-76)`() throws {
         // Foundation URL (via IRI.Representable)
         let url = URL(string: "https://example.com/feed")!
-        let feed = RFC_4287.Feed(id: url, title: "My Feed", updated: Date())
+        let feed = RFC_4287.Feed(id: url, title: "My Feed", updated: try currentDateTime())
 
         #expect(feed != nil)
         #expect(feed?.id.value == "https://example.com/feed")
@@ -44,13 +51,13 @@ struct `README Verification` {
         let feed = RFC_4287.Feed(
             id: "urn:uuid:60a76c80-d399-11d9-b93C-0003939e0af6",
             title: "Example Feed",
-            updated: Date(),
+            updated: try currentDateTime(),
             authors: ["John Doe"],
             entries: [
                 RFC_4287.Entry(
                     id: "urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a",
                     title: "First Post",
-                    updated: Date(),
+                    updated: try currentDateTime(),
                     content: RFC_4287.Content(value: "Hello, world!", type: .text)
                 )!
             ]
@@ -67,7 +74,7 @@ struct `README Verification` {
         let entry = RFC_4287.Entry(
             id: "urn:uuid:entry-123",
             title: "Blog Post",
-            updated: Date(),
+            updated: try currentDateTime(),
             links: [
                 RFC_4287.Link(
                     href: "https://example.com/posts/123",

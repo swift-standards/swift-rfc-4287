@@ -1,4 +1,6 @@
+@_exported import RFC_3339
 @_exported import RFC_3987
+@_exported import RFC_4648
 
 /// RFC 4287: The Atom Syndication Format
 ///

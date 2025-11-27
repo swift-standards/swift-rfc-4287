@@ -3,51 +3,51 @@ import Testing
 @testable import RFC_4287
 
 @Suite
-struct `Date Formatting Tests` {
-    @Test func dateToAtomString() async throws {
-        let date = Date(timeIntervalSince1970: 1_609_459_200)  // 2021-01-01 00:00:00 UTC
+struct `RFC 3339 DateTime Tests` {
+    @Test func createDateTimeFromComponents() async throws {
+        let time = try Time(year: 2021, month: 1, day: 1, hour: 0, minute: 0, second: 0)
+        let dateTime = RFC_3339.DateTime(time: time, offset: .utc)
 
-        let formatted = date.atomFormatted()
+        #expect(dateTime.time.year == 2021)
+        #expect(dateTime.time.month == 1)
+        #expect(dateTime.time.day == 1)
+        #expect(dateTime.offset == .utc)
+    }
+
+    @Test func parseRFC3339String() async throws {
+        let dateString = "2021-01-01T00:00:00Z"
+        let dateTime = try RFC_3339.Parser.parse(dateString)
+
+        #expect(dateTime.time.year == 2021)
+        #expect(dateTime.time.month == 1)
+        #expect(dateTime.time.day == 1)
+        #expect(dateTime.offset == .utc)
+    }
+
+    @Test func formatRFC3339String() async throws {
+        let time = try Time(year: 2021, month: 1, day: 1, hour: 12, minute: 30, second: 45)
+        let dateTime = RFC_3339.DateTime(time: time, offset: .utc)
+
+        let formatted = RFC_3339.Formatter.format(dateTime)
 
         // Should be ISO 8601 format
         #expect(formatted.contains("2021-01-01"))
         #expect(formatted.contains("T"))
-        #expect(formatted.contains("Z"))
+        #expect(formatted.contains("12:30:45"))
     }
 
-    @Test func atomStringToDate() async throws {
-        let dateString = "2021-01-01T00:00:00Z"
+    @Test func roundTripDateTimeFormatting() async throws {
+        let time = try Time(year: 2021, month: 6, day: 15, hour: 14, minute: 30, second: 0)
+        let original = RFC_3339.DateTime(time: time, offset: .utc)
 
-        let date = try Date(atomString: dateString)
+        let formatted = RFC_3339.Formatter.format(original)
+        let parsed = try RFC_3339.Parser.parse(formatted)
 
-        #expect(date.timeIntervalSince1970 == 1_609_459_200)
-    }
-
-    @Test func atomStringWithFractionalSeconds() async throws {
-        let dateString = "2021-01-01T00:00:00.123Z"
-
-        let date = try Date(atomString: dateString)
-
-        #expect(date.timeIntervalSince1970 > 0)
-    }
-
-    @Test func roundTripDateFormatting() async throws {
-        let originalDate = Date(timeIntervalSince1970: 1_609_459_200)
-
-        let formatted = originalDate.atomFormatted()
-        let parsedDate = try Date(atomString: formatted)
-
-        // Should be equal within a second (accounting for fractional seconds)
-        let difference = abs(originalDate.timeIntervalSince1970 - parsedDate.timeIntervalSince1970)
-        #expect(difference < 1.0)
-    }
-
-    @Test func invalidDateStringThrows() async throws {
-        let invalidString = "not a date"
-
-        #expect(throws: RFC_4287.ValidationError.self) {
-            try Date(atomString: invalidString)
-        }
+        #expect(parsed.time.year == original.time.year)
+        #expect(parsed.time.month == original.time.month)
+        #expect(parsed.time.day == original.time.day)
+        #expect(parsed.time.hour == original.time.hour)
+        #expect(parsed.time.minute == original.time.minute)
     }
 
     @Test func variousRFC3339Formats() async throws {
@@ -59,8 +59,8 @@ struct `Date Formatting Tests` {
         ]
 
         for format in formats {
-            let date = try Date(atomString: format)
-            #expect(date.timeIntervalSince1970 > 0)
+            let dateTime = try RFC_3339.Parser.parse(format)
+            #expect(dateTime.time.year > 0)
         }
     }
 }

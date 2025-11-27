@@ -9,7 +9,9 @@ extension String {
 extension Target.Dependency {
     static var rfc4287: Self { .target(name: .rfc4287) }
     static var rfc2822: Self { .product(name: "RFC 2822", package: "swift-rfc-2822") }
+    static var rfc3339: Self { .product(name: "RFC 3339", package: "swift-rfc-3339") }
     static var rfc3987: Self { .product(name: "RFC 3987", package: "swift-rfc-3987") }
+    static var rfc4648: Self { .product(name: "RFC 4648", package: "swift-rfc-4648") }
 }
 
 let package = Package(
@@ -27,13 +29,15 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/swift-standards/swift-rfc-2822.git", from: "0.1.0"),
-        .package(url: "https://github.com/swift-standards/swift-rfc-3987.git", from: "0.1.0")
+        .package(url: "https://github.com/swift-standards/swift-rfc-2822.git", from: "0.4.0"),
+        .package(url: "https://github.com/swift-standards/swift-rfc-3339.git", from: "0.3.0"),
+        .package(url: "https://github.com/swift-standards/swift-rfc-3987.git", from: "0.1.0"),
+        .package(url: "https://github.com/swift-standards/swift-rfc-4648.git", from: "0.1.0")
     ],
     targets: [
         .target(
             name: .rfc4287,
-            dependencies: [.rfc2822, .rfc3987],
+            dependencies: [.rfc2822, .rfc3339, .rfc3987, .rfc4648],
             swiftSettings: [
                 .swiftLanguageMode(.v6),
                 .enableExperimentalFeature("StrictConcurrency")

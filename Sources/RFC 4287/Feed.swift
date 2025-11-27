@@ -46,7 +46,7 @@ extension RFC_4287 {
         public let title: Title
 
         /// Timestamp of last significant modification (required)
-        public let updated: Date
+        public let updated: RFC_3339.DateTime
 
         /// Base IRI for resolving relative references (xml:base)
         ///
@@ -84,7 +84,7 @@ extension RFC_4287 {
         public init?(
             id: RFC_3987.IRI,
             title: Title,
-            updated: Date,
+            updated: RFC_3339.DateTime,
             authors: [Author] = [],
             entries: [Entry] = [],
             links: [Link] = [],
@@ -148,7 +148,7 @@ extension RFC_4287 {
         public init?(
             id: any RFC_3987.IRI.Representable,
             title: Title,
-            updated: Date,
+            updated: RFC_3339.DateTime,
             authors: [Author] = [],
             entries: [Entry] = [],
             links: [Link] = [],
@@ -185,7 +185,7 @@ extension RFC_4287 {
         internal static func makeUnchecked(
             id: String,
             title: Title,
-            updated: Date,
+            updated: RFC_3339.DateTime,
             authors: [Author],
             entries: [Entry],
             links: [Link],
@@ -221,7 +221,7 @@ extension RFC_4287 {
         private init(
             uncheckedId id: RFC_3987.IRI,
             uncheckedTitle title: Title,
-            uncheckedUpdated updated: Date,
+            uncheckedUpdated updated: RFC_3339.DateTime,
             uncheckedAuthors authors: [Author],
             uncheckedEntries entries: [Entry],
             uncheckedLinks links: [Link],

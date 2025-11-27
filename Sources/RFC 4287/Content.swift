@@ -83,23 +83,24 @@ extension RFC_4287 {
             self.lang = lang
         }
 
-        /// Creates inline binary content from data
+        /// Creates inline binary content from raw bytes
         ///
         /// - Parameters:
-        ///   - data: The binary content data (will be base64-encoded)
+        ///   - rawBytes: The raw binary content bytes (will be base64-encoded per RFC 4287)
         ///   - mediaType: The MIME type of the content
         ///   - base: Base IRI for resolving relative references
         ///   - lang: Language of the content
         ///
-        /// This initializer automatically base64-encodes the data as required by RFC 4287
-        /// for binary media types.
+        /// This initializer automatically base64-encodes the bytes as required by RFC 4287
+        /// for binary media types. If you already have a base64-encoded string, use
+        /// `init(value:type:base:lang:)` instead with `type: .media(mediaType)`.
         public init(
-            data: Data,
+            rawBytes: [UInt8],
             mediaType: String,
             base: (any RFC_3987.IRI.Representable)? = nil,
             lang: String? = nil
         ) {
-            self.value = data.base64EncodedString()
+            self.value = rawBytes.base64()
             self.type = .media(mediaType)
             self.src = nil
             self.base = base?.iri

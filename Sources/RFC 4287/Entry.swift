@@ -27,10 +27,10 @@ extension RFC_4287 {
         public let links: [Link]
 
         /// Timestamp of last significant modification (required)
-        public let updated: Date
+        public let updated: RFC_3339.DateTime
 
         /// Timestamp of initial creation or publication (optional)
-        public let published: Date?
+        public let published: RFC_3339.DateTime?
 
         /// Copyright and licensing information (optional)
         public let rights: Rights?
@@ -76,13 +76,13 @@ extension RFC_4287 {
         public init?(
             id: RFC_3987.IRI,
             title: Title,
-            updated: Date,
+            updated: RFC_3339.DateTime,
             authors: [Author] = [],
             content: Content? = nil,
             links: [Link] = [],
             categories: [Category] = [],
             contributors: [Contributor] = [],
-            published: Date? = nil,
+            published: RFC_3339.DateTime? = nil,
             rights: Rights? = nil,
             source: Source? = nil,
             summary: Summary? = nil,
@@ -147,13 +147,13 @@ extension RFC_4287 {
         public init?(
             id: any RFC_3987.IRI.Representable,
             title: Title,
-            updated: Date,
+            updated: RFC_3339.DateTime,
             authors: [Author] = [],
             content: Content? = nil,
             links: [Link] = [],
             categories: [Category] = [],
             contributors: [Contributor] = [],
-            published: Date? = nil,
+            published: RFC_3339.DateTime? = nil,
             rights: Rights? = nil,
             source: Source? = nil,
             summary: Summary? = nil,
@@ -182,13 +182,13 @@ extension RFC_4287 {
         internal static func makeUnchecked(
             id: String,
             title: Title,
-            updated: Date,
+            updated: RFC_3339.DateTime,
             authors: [Author],
             content: Content?,
             links: [Link],
             categories: [Category],
             contributors: [Contributor],
-            published: Date?,
+            published: RFC_3339.DateTime?,
             rights: Rights?,
             source: Source?,
             summary: Summary?,
@@ -216,13 +216,13 @@ extension RFC_4287 {
         private init(
             uncheckedId id: RFC_3987.IRI,
             uncheckedTitle title: Title,
-            uncheckedUpdated updated: Date,
+            uncheckedUpdated updated: RFC_3339.DateTime,
             uncheckedAuthors authors: [Author],
             uncheckedContent content: Content?,
             uncheckedLinks links: [Link],
             uncheckedCategories categories: [Category],
             uncheckedContributors contributors: [Contributor],
-            uncheckedPublished published: Date?,
+            uncheckedPublished published: RFC_3339.DateTime?,
             uncheckedRights rights: Rights?,
             uncheckedSource source: Source?,
             uncheckedSummary summary: Summary?,
