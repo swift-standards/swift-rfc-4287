@@ -14,41 +14,39 @@ struct `README Verification` {
     @Test
     func `String literal feed creation (README line 64-68)`() throws {
         // String literals (recommended - clean and simple)
-        let feed = RFC_4287.Feed(
+        let feed = try RFC_4287.Feed(
             id: "https://example.com/feed",
             title: "My Feed",
             updated: try currentDateTime()
         )
 
-        #expect(feed != nil)
-        #expect(feed?.id.value == "https://example.com/feed")
-        #expect(feed?.title.value == "My Feed")
+        #expect(feed.id.value == "https://example.com/feed")
+        #expect(feed.title.value == "My Feed")
     }
 
     @Test
     func `Explicit IRI feed creation (README line 70-72)`() throws {
         // Explicit IRI type
-        let id = try RFC_3987.IRI("https://example.com/feed")
-        let feed = RFC_4287.Feed(id: id, title: "My Feed", updated: try currentDateTime())
+        let id: RFC_3987.IRI = try .init("https://example.com/feed")
+        let feed = try RFC_4287.Feed(id: id, title: "My Feed", updated: try currentDateTime())
 
-        #expect(feed != nil)
-        #expect(feed?.id == id)
+        #expect(feed.id == id)
     }
 
     @Test
     func `Foundation URL feed creation (README line 74-76)`() throws {
-        // Foundation URL (via IRI.Representable)
+        // Foundation URL converted to IRI
         let url = URL(string: "https://example.com/feed")!
-        let feed = RFC_4287.Feed(id: url, title: "My Feed", updated: try currentDateTime())
+        let iri = try RFC_3987.IRI(url.absoluteString)
+        let feed = try RFC_4287.Feed(id: iri, title: "My Feed", updated: try currentDateTime())
 
-        #expect(feed != nil)
-        #expect(feed?.id.value == "https://example.com/feed")
+        #expect(feed.id.value == "https://example.com/feed")
     }
 
     @Test
     func `Quick Start example (README line 85-101)`() throws {
         // Create an Atom feed
-        let feed = RFC_4287.Feed(
+        let feed = try RFC_4287.Feed(
             id: "urn:uuid:60a76c80-d399-11d9-b93C-0003939e0af6",
             title: "Example Feed",
             updated: try currentDateTime(),
@@ -59,19 +57,18 @@ struct `README Verification` {
                     title: "First Post",
                     updated: try currentDateTime(),
                     content: RFC_4287.Content(value: "Hello, world!", type: .text)
-                )!
+                )
             ]
         )
 
-        #expect(feed != nil)
-        #expect(feed?.authors.count == 1)
-        #expect(feed?.entries.count == 1)
-        #expect(feed?.entries.first?.title.value == "First Post")
+        #expect(feed.authors.count == 1)
+        #expect(feed.entries.count == 1)
+        #expect(feed.entries.first?.title.value == "First Post")
     }
 
     @Test
     func `Creating entries with links (README line 111-124)`() throws {
-        let entry = RFC_4287.Entry(
+        let entry: RFC_4287.Entry = try .init(
             id: "urn:uuid:entry-123",
             title: "Blog Post",
             updated: try currentDateTime(),
@@ -84,7 +81,6 @@ struct `README Verification` {
             ]
         )
 
-        #expect(entry != nil)
-        #expect(entry?.links.first?.href.value == "https://example.com/posts/123")
+        #expect(entry.links.first?.href.value == "https://example.com/posts/123")
     }
 }

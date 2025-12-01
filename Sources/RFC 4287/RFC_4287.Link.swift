@@ -5,62 +5,6 @@ extension RFC_4287 {
     ///
     /// Links define references to Web resources.
     public struct Link: Hashable, Sendable, Codable {
-        /// Link relation types as defined in RFC 4287 and extensions
-        ///
-        /// This struct allows for both standard relation types and custom values,
-        /// avoiding the enum-with-custom-case code smell.
-        public struct Relation: Hashable, Sendable, Codable, ExpressibleByStringLiteral {
-            /// The string value of the relation
-            public let value: String
-
-            /// Creates a relation with a custom value
-            ///
-            /// - Parameter value: The relation type string
-            public init(_ value: String) {
-                self.value = value
-            }
-
-            // MARK: - Standard Relations (RFC 4287)
-
-            /// Alternate representation
-            public static let alternate = Relation("alternate")
-
-            /// Related resource
-            public static let related = Relation("related")
-
-            /// Self-reference
-            public static let `self` = Relation("self")
-
-            /// Enclosed resource (e.g., podcast episode)
-            public static let enclosure = Relation("enclosure")
-
-            /// Source of information
-            public static let via = Relation("via")
-
-            // MARK: - Extension Relations
-
-            /// Comments/replies (RFC 4685 - Atom Threading Extensions)
-            public static let replies = Relation("replies")
-
-            // MARK: - ExpressibleByStringLiteral
-
-            public init(stringLiteral value: String) {
-                self.init(value)
-            }
-
-            // MARK: - Codable
-
-            public init(from decoder: any Decoder) throws {
-                let container = try decoder.singleValueContainer()
-                let string = try container.decode(String.self)
-                self.init(string)
-            }
-
-            public func encode(to encoder: any Encoder) throws {
-                var container = encoder.singleValueContainer()
-                try container.encode(value)
-            }
-        }
 
         /// The IRI of the referenced resource (required)
         ///
@@ -164,20 +108,85 @@ extension RFC_4287 {
     }
 }
 
-// MARK: - ExpressibleByStringLiteral
-extension RFC_4287.Link: ExpressibleByStringLiteral {
-    /// Creates a link from a string literal (just href, alternate relation)
+extension RFC_4287.Link {
+    /// Link relation types as defined in RFC 4287 and extensions
     ///
-    /// Example:
-    /// ```swift
-    /// let link: RFC_4287.Link = "https://example.com/post"
-    /// ```
-    ///
-    /// Note: This does not perform IRI validation at compile time.
-    /// For runtime validation, use `try RFC_3987.IRI("...")` and pass to `init(href:)`.
-    public init(stringLiteral value: String) {
-        self.init(
-            href: RFC_3987.IRI(unchecked: value), rel: nil, type: nil, hreflang: nil, title: nil,
-            length: nil)
+    /// This struct allows for both standard relation types and custom values,
+    /// avoiding the enum-with-custom-case code smell.
+    public struct Relation: Hashable, Sendable, ExpressibleByStringLiteral {
+        /// The string value of the relation
+        public let value: String
+        
+        /// Creates a relation with a custom value
+        ///
+        /// - Parameter value: The relation type string
+        public init(_ value: String) {
+            self.value = value
+        }
     }
 }
+
+extension RFC_4287.Link.Relation {
+    
+    // MARK: - Standard Relations (RFC 4287)
+    
+    /// Alternate representation
+    public static let alternate = Self("alternate")
+    
+    /// Related resource
+    public static let related = Self("related")
+    
+    /// Self-reference
+    public static let `self` = Self("self")
+    
+    /// Enclosed resource (e.g., podcast episode)
+    public static let enclosure = Self("enclosure")
+    
+    /// Source of information
+    public static let via = Self("via")
+    
+    // MARK: - Extension Relations
+    
+    /// Comments/replies (RFC 4685 - Atom Threading Extensions)
+    public static let replies = Self("replies")
+}
+
+extension RFC_4287.Link.Relation {
+    // MARK: - ExpressibleByStringLiteral
+    
+    public init(stringLiteral value: String) {
+        self.init(value)
+    }
+}
+
+extension RFC_4287.Link.Relation: Codable {
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let string = try container.decode(String.self)
+        self.init(string)
+    }
+    
+    public func encode(to encoder: any Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(value)
+    }
+}
+
+//
+//// MARK: - ExpressibleByStringLiteral
+//extension RFC_4287.Link: ExpressibleByStringLiteral {
+//    /// Creates a link from a string literal (just href, alternate relation)
+//    ///
+//    /// Example:
+//    /// ```swift
+//    /// let link: RFC_4287.Link = "https://example.com/post"
+//    /// ```
+//    ///
+//    /// Note: This does not perform IRI validation at compile time.
+//    /// For runtime validation, use `try RFC_3987.IRI("...")` and pass to `init(href:)`.
+//    public init(stringLiteral value: String) {
+//        self.init(
+//            href: RFC_3987.IRI(value), rel: nil, type: nil, hreflang: nil, title: nil,
+//            length: nil)
+//    }
+//}

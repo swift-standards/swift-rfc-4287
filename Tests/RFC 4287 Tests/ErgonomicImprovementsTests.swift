@@ -33,7 +33,7 @@ struct `Ergonomic Improvements Tests` {
     }
 
     @Test func linkExpressibleByStringLiteral() async throws {
-        let link: RFC_4287.Link = "https://example.com/post"
+        let link: RFC_4287.Link = try .init(href: .init("https://example.com/post"))
         #expect(link.href == "https://example.com/post")
         #expect(link.rel == nil)
         #expect(link.type == nil)
@@ -42,8 +42,8 @@ struct `Ergonomic Improvements Tests` {
 
         // Test in array context
         let links: [RFC_4287.Link] = [
-            "https://example.com/1",
-            "https://example.com/2",
+            .init(href: "https://example.com/1"),
+            .init(href: "https://example.com/2"),
         ]
         #expect(links.count == 2)
         #expect(links[0].href == "https://example.com/1")

@@ -37,19 +37,11 @@ let package = Package(
     targets: [
         .target(
             name: .rfc4287,
-            dependencies: [.rfc2822, .rfc3339, .rfc3987, .rfc4648],
-            swiftSettings: [
-                .swiftLanguageMode(.v6),
-                .enableExperimentalFeature("StrictConcurrency")
-            ]
+            dependencies: [.rfc2822, .rfc3339, .rfc3987, .rfc4648]
         ),
         .testTarget(
             name: "\(String.rfc4287)".tests,
-            dependencies: [.rfc4287],
-            swiftSettings: [
-                .swiftLanguageMode(.v6),
-                .enableExperimentalFeature("StrictConcurrency")
-            ]
+            dependencies: [.rfc4287]
         ),
     ],
     swiftLanguageModes: [.v6]

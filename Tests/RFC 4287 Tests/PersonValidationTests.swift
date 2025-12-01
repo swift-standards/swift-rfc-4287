@@ -40,10 +40,12 @@ struct `Person Email Validation` {
 
     @Test
     func `Person with convenience emailString initializer`() throws {
-        let person = try RFC_4287.Person(
+        let person = try RFC_4287.Person.init(
             name: "Test User",
             uri: nil,
-            emailString: "test@example.com"
+            email: .init("test@example.com"),
+            base: nil,
+            lang: nil
         )
 
         #expect(person.name == "Test User")
@@ -56,7 +58,7 @@ struct `Person Email Validation` {
             try RFC_4287.Person(
                 name: "Invalid",
                 uri: nil,
-                emailString: "not-an-email"
+                email: .init("not-an-email")
             )
         }
     }
@@ -164,8 +166,9 @@ struct `Person IRI.Representable Integration` {
     @Test
     func `Person with Foundation URL via IRI.Representable`() throws {
         let url = URL(string: "https://example.com/~user")!
+        let iri: RFC_3987.IRI = try .init(url.absoluteString)
         let email = try RFC_2822.AddrSpec(ascii: "user@example.com".utf8)
-        let person = RFC_4287.Person(name: "User", uri: url, email: email)
+        let person = RFC_4287.Person(name: "User", uri: iri, email: email)
 
         #expect(person.uri == "https://example.com/~user")
     }

@@ -11,24 +11,24 @@ struct `RFC 3339 DateTime Tests` {
         #expect(dateTime.time.year == 2021)
         #expect(dateTime.time.month == 1)
         #expect(dateTime.time.day == 1)
-        #expect(dateTime.offset == .utc)
+        #expect(dateTime.offset == RFC_3339.Offset.utc)
     }
 
     @Test func parseRFC3339String() async throws {
         let dateString = "2021-01-01T00:00:00Z"
-        let dateTime = try RFC_3339.Parser.parse(dateString)
+        let dateTime = try RFC_3339.DateTime(dateString)
 
         #expect(dateTime.time.year == 2021)
         #expect(dateTime.time.month == 1)
         #expect(dateTime.time.day == 1)
-        #expect(dateTime.offset == .utc)
+        #expect(dateTime.offset == RFC_3339.Offset.utc)
     }
 
     @Test func formatRFC3339String() async throws {
         let time = try Time(year: 2021, month: 1, day: 1, hour: 12, minute: 30, second: 45)
         let dateTime = RFC_3339.DateTime(time: time, offset: .utc)
 
-        let formatted = RFC_3339.Formatter.format(dateTime)
+        let formatted = String(dateTime)
 
         // Should be ISO 8601 format
         #expect(formatted.contains("2021-01-01"))
@@ -40,8 +40,8 @@ struct `RFC 3339 DateTime Tests` {
         let time = try Time(year: 2021, month: 6, day: 15, hour: 14, minute: 30, second: 0)
         let original = RFC_3339.DateTime(time: time, offset: .utc)
 
-        let formatted = RFC_3339.Formatter.format(original)
-        let parsed = try RFC_3339.Parser.parse(formatted)
+        let formatted = String(original)
+        let parsed = try RFC_3339.DateTime(formatted)
 
         #expect(parsed.time.year == original.time.year)
         #expect(parsed.time.month == original.time.month)
@@ -59,7 +59,7 @@ struct `RFC 3339 DateTime Tests` {
         ]
 
         for format in formats {
-            let dateTime = try RFC_3339.Parser.parse(format)
+            let dateTime = try RFC_3339.DateTime(format)
             #expect(dateTime.time.year > 0)
         }
     }

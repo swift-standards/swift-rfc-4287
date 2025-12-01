@@ -7,23 +7,23 @@ extension RFC_4287 {
     public struct Category: Hashable, Sendable, Codable {
         /// The category term (required)
         public let term: String
-
+        
         /// The categorization scheme IRI (optional)
         public let scheme: RFC_3987.IRI?
-
+        
         /// Human-readable label for the category (optional)
         public let label: String?
-
+        
         /// Base IRI for resolving relative references (xml:base)
         ///
         /// Per RFC 4287 Section 2, any element may have an xml:base attribute.
         public let base: RFC_3987.IRI?
-
+        
         /// Language of the category (xml:lang)
         ///
         /// Per RFC 4287 Section 2, any element may have an xml:lang attribute.
         public let lang: String?
-
+        
         /// Creates a new category
         ///
         /// - Parameters:
@@ -46,25 +46,29 @@ extension RFC_4287 {
             self.lang = lang
         }
 
-        /// Creates a new category with IRI.Representable scheme (convenience)
-        ///
-        /// Accepts any IRI.Representable type such as Foundation URL.
-        ///
-        /// - Parameters:
-        ///   - term: The category term
-        ///   - scheme: The categorization scheme IRI (e.g., URL)
-        ///   - label: A human-readable label
-        ///   - base: Base IRI for resolving relative references (e.g., URL)
-        ///   - lang: Language of the category
-        public init(
-            term: String,
-            scheme: (any RFC_3987.IRI.Representable)?,
-            label: String? = nil,
-            base: (any RFC_3987.IRI.Representable)? = nil,
-            lang: String? = nil
-        ) {
-            self.init(term: term, scheme: scheme?.iri, label: label, base: base?.iri, lang: lang)
-        }
+    }
+}
+
+extension RFC_4287.Category {
+    
+    /// Creates a new category with IRI.Representable scheme (convenience)
+    ///
+    /// Accepts any IRI.Representable type such as Foundation URL.
+    ///
+    /// - Parameters:
+    ///   - term: The category term
+    ///   - scheme: The categorization scheme IRI (e.g., URL)
+    ///   - label: A human-readable label
+    ///   - base: Base IRI for resolving relative references (e.g., URL)
+    ///   - lang: Language of the category
+    public init(
+        term: String,
+        scheme: (any RFC_3987.IRI.Representable)?,
+        label: String? = nil,
+        base: (any RFC_3987.IRI.Representable)? = nil,
+        lang: String? = nil
+    ) {
+        self.init(term: term, scheme: scheme?.iri, label: label, base: base?.iri, lang: lang)
     }
 }
 

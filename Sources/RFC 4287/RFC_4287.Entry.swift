@@ -7,53 +7,62 @@ extension RFC_4287 {
     public struct Entry: Hashable, Sendable, Codable {
         /// Entry authors (at least one required if feed has no authors)
         public let authors: [Author]
-
+        
         /// Entry categories
         public let categories: [Category]
-
+        
         /// Entry content
         public let content: Content?
-
+        
         /// Entry contributors
         public let contributors: [Contributor]
-
+        
         /// Permanent, universally unique identifier (required)
         ///
         /// Per RFC 4287 Section 4.2.6, this MUST be an IRI reference.
         /// It MUST be permanent and universally unique, and MUST NOT change.
         public let id: RFC_3987.IRI
-
+        
         /// Links associated with the entry
         public let links: [Link]
-
+        
         /// Timestamp of last significant modification (required)
         public let updated: RFC_3339.DateTime
-
+        
         /// Timestamp of initial creation or publication (optional)
         public let published: RFC_3339.DateTime?
-
+        
         /// Copyright and licensing information (optional)
         public let rights: Rights?
-
+        
         /// Source feed metadata (optional)
         public let source: Source?
-
+        
         /// Summary or excerpt (optional)
         public let summary: Summary?
-
+        
         /// Human-readable title (required)
         public let title: Title
-
+        
         /// Base IRI for resolving relative references (xml:base)
         ///
         /// Per RFC 4287 Section 2, any element may have an xml:base attribute.
         public let base: RFC_3987.IRI?
-
+        
         /// Language of the entry content (xml:lang)
         ///
         /// Per RFC 4287 Section 2, any element may have an xml:lang attribute.
         public let lang: String?
+    }
+}
 
+extension RFC_4287.Entry {
+    public enum Error: Swift.Error {
+        case blank
+    }
+}
+
+extension RFC_4287.Entry {
         /// Creates a new entry with validation
         ///
         /// - Parameters:
@@ -73,28 +82,28 @@ extension RFC_4287 {
         ///   - lang: Language of the entry content
         ///
         /// - Returns: A validated entry, or nil if validation fails
-        public init?(
+        public init(
             id: RFC_3987.IRI,
-            title: Title,
+            title: RFC_4287.Title,
             updated: RFC_3339.DateTime,
-            authors: [Author] = [],
-            content: Content? = nil,
-            links: [Link] = [],
-            categories: [Category] = [],
-            contributors: [Contributor] = [],
+            authors: [RFC_4287.Author] = [],
+            content: RFC_4287.Content? = nil,
+            links: [RFC_4287.Link] = [],
+            categories: [RFC_4287.Category] = [],
+            contributors: [RFC_4287.Contributor] = [],
             published: RFC_3339.DateTime? = nil,
-            rights: Rights? = nil,
-            source: Source? = nil,
-            summary: Summary? = nil,
+            rights: RFC_4287.Rights? = nil,
+            source: RFC_4287.Source? = nil,
+            summary: RFC_4287.Summary? = nil,
             base: RFC_3987.IRI? = nil,
             lang: String? = nil
-        ) {
+        ) throws(Error) {
             // RFC 4287 Section 4.1.2: Entry must have content OR an alternate link
             let hasContent = content != nil
             let hasAlternateLink = links.contains { $0.isAlternate }
 
             guard hasContent || hasAlternateLink else {
-                return nil
+                throw Error.blank
             }
 
             // RFC 4287 Section 4.2.13: Summary is REQUIRED when:
@@ -103,7 +112,7 @@ extension RFC_4287 {
             if let content = content {
                 let summaryRequired = content.src != nil || content.requiresBase64Encoding
                 if summaryRequired && summary == nil {
-                    return nil
+                    throw Error.blank
                 }
             }
 
@@ -146,21 +155,21 @@ extension RFC_4287 {
         /// - Returns: A validated entry, or nil if validation fails
         public init?(
             id: any RFC_3987.IRI.Representable,
-            title: Title,
+            title: RFC_4287.Title,
             updated: RFC_3339.DateTime,
-            authors: [Author] = [],
-            content: Content? = nil,
-            links: [Link] = [],
-            categories: [Category] = [],
-            contributors: [Contributor] = [],
+            authors: [RFC_4287.Author] = [],
+            content: RFC_4287.Content? = nil,
+            links: [RFC_4287.Link] = [],
+            categories: [RFC_4287.Category] = [],
+            contributors: [RFC_4287.Contributor] = [],
             published: RFC_3339.DateTime? = nil,
-            rights: Rights? = nil,
-            source: Source? = nil,
-            summary: Summary? = nil,
+            rights: RFC_4287.Rights? = nil,
+            source: RFC_4287.Source? = nil,
+            summary: RFC_4287.Summary? = nil,
             base: (any RFC_3987.IRI.Representable)? = nil,
             lang: String? = nil
-        ) {
-            self.init(
+        ) throws(Error) {
+            try self.init(
                 id: id.iri,
                 title: title,
                 updated: updated,
@@ -177,72 +186,72 @@ extension RFC_4287 {
                 lang: lang
             )
         }
-
-        /// Creates a new entry without validation (for internal use, e.g. decoding)
-        internal static func makeUnchecked(
-            id: String,
-            title: Title,
-            updated: RFC_3339.DateTime,
-            authors: [Author],
-            content: Content?,
-            links: [Link],
-            categories: [Category],
-            contributors: [Contributor],
-            published: RFC_3339.DateTime?,
-            rights: Rights?,
-            source: Source?,
-            summary: Summary?,
-            base: String?,
-            lang: String?
-        ) -> Entry {
-            Entry(
-                uncheckedId: RFC_3987.IRI(unchecked: id),
-                uncheckedTitle: title,
-                uncheckedUpdated: updated,
-                uncheckedAuthors: authors,
-                uncheckedContent: content,
-                uncheckedLinks: links,
-                uncheckedCategories: categories,
-                uncheckedContributors: contributors,
-                uncheckedPublished: published,
-                uncheckedRights: rights,
-                uncheckedSource: source,
-                uncheckedSummary: summary,
-                uncheckedBase: base.map { RFC_3987.IRI(unchecked: $0) },
-                uncheckedLang: lang
-            )
-        }
-
-        private init(
-            uncheckedId id: RFC_3987.IRI,
-            uncheckedTitle title: Title,
-            uncheckedUpdated updated: RFC_3339.DateTime,
-            uncheckedAuthors authors: [Author],
-            uncheckedContent content: Content?,
-            uncheckedLinks links: [Link],
-            uncheckedCategories categories: [Category],
-            uncheckedContributors contributors: [Contributor],
-            uncheckedPublished published: RFC_3339.DateTime?,
-            uncheckedRights rights: Rights?,
-            uncheckedSource source: Source?,
-            uncheckedSummary summary: Summary?,
-            uncheckedBase base: RFC_3987.IRI?,
-            uncheckedLang lang: String?
-        ) {
-            self.id = id
-            self.title = title
-            self.updated = updated
-            self.authors = authors
-            self.content = content
-            self.links = links
-            self.categories = categories
-            self.contributors = contributors
-            self.published = published
-            self.rights = rights
-            self.source = source
-            self.summary = summary
-            self.base = base
-            self.lang = lang
-        }
-    }
+//
+//        /// Creates a new entry without validation (for internal use, e.g. decoding)
+//        internal static func makeUnchecked(
+//            id: String,
+//            title: RFC_4287.Title,
+//            updated: RFC_3339.DateTime,
+//            authors: [Author],
+//            content: Content?,
+//            links: [Link],
+//            categories: [Category],
+//            contributors: [Contributor],
+//            published: RFC_3339.DateTime?,
+//            rights: Rights?,
+//            source: Source?,
+//            summary: Summary?,
+//            base: String?,
+//            lang: String?
+//        ) -> Entry {
+//            Entry(
+//                uncheckedId: RFC_3987.IRI(__unchecked: (), value: id),
+//                uncheckedTitle: title,
+//                uncheckedUpdated: updated,
+//                uncheckedAuthors: authors,
+//                uncheckedContent: content,
+//                uncheckedLinks: links,
+//                uncheckedCategories: categories,
+//                uncheckedContributors: contributors,
+//                uncheckedPublished: published,
+//                uncheckedRights: rights,
+//                uncheckedSource: source,
+//                uncheckedSummary: summary,
+//                uncheckedBase: base.map { RFC_3987.IRI(__unchecked: (), value: $0) },
+//                uncheckedLang: lang
+//            )
+//        }
+//
+//        private init(
+//            uncheckedId id: RFC_3987.IRI,
+//            uncheckedTitle title: Title,
+//            uncheckedUpdated updated: RFC_3339.DateTime,
+//            uncheckedAuthors authors: [Author],
+//            uncheckedContent content: Content?,
+//            uncheckedLinks links: [Link],
+//            uncheckedCategories categories: [Category],
+//            uncheckedContributors contributors: [Contributor],
+//            uncheckedPublished published: RFC_3339.DateTime?,
+//            uncheckedRights rights: Rights?,
+//            uncheckedSource source: Source?,
+//            uncheckedSummary summary: Summary?,
+//            uncheckedBase base: RFC_3987.IRI?,
+//            uncheckedLang lang: String?
+//        ) {
+//            self.id = id
+//            self.title = title
+//            self.updated = updated
+//            self.authors = authors
+//            self.content = content
+//            self.links = links
+//            self.categories = categories
+//            self.contributors = contributors
+//            self.published = published
+//            self.rights = rights
+//            self.source = source
+//            self.summary = summary
+//            self.base = base
+//            self.lang = lang
+//        }
+//    }
 }
