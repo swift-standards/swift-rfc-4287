@@ -63,14 +63,13 @@ extension RFC_4287 {
     }
 }
 
-
 extension RFC_4287.Feed {
     public enum Error: Swift.Error {
         case blank
     }
 }
 extension RFC_4287.Feed {
-    
+
     /// Creates a new feed with validation
     ///
     /// - Parameters:
@@ -190,46 +189,46 @@ extension RFC_4287.Feed {
             lang: lang
         )
     }
-//
-//    /// Creates a new feed without validation (for internal use, e.g. decoding)
-//    @_spi(Internal)
-//    public init (
-//        unchecked: Void,
-//        id: String,
-//        title: Title,
-//        updated: RFC_3339.DateTime,
-//        authors: [Author],
-//        entries: [Entry],
-//        links: [Link],
-//        categories: [Category],
-//        contributors: [Contributor],
-//        generator: Generator?,
-//        icon: String?,
-//        logo: String?,
-//        rights: Rights?,
-//        subtitle: Subtitle?,
-//        base: String?,
-//        lang: String?
-//    ) {
-//        Feed(
-//            uncheckedId: RFC_3987.IRI(__unchecked: (), value: id),
-//            uncheckedTitle: title,
-//            uncheckedUpdated: updated,
-//            uncheckedAuthors: authors,
-//            uncheckedEntries: entries,
-//            uncheckedLinks: links,
-//            uncheckedCategories: categories,
-//            uncheckedContributors: contributors,
-//            uncheckedGenerator: generator,
-//            uncheckedIcon: icon.map { RFC_3987.IRI(__unchecked: (), value: $0) },
-//            uncheckedLogo: logo.map { RFC_3987.IRI(__unchecked: (), value: $0) },
-//            uncheckedRights: rights,
-//            uncheckedSubtitle: subtitle,
-//            uncheckedBase: base.map { RFC_3987.IRI(__unchecked: (), value: $0) },
-//            uncheckedLang: lang
-//        )
-//    }
-//    
+    //
+    //    /// Creates a new feed without validation (for internal use, e.g. decoding)
+    //    @_spi(Internal)
+    //    public init (
+    //        unchecked: Void,
+    //        id: String,
+    //        title: Title,
+    //        updated: RFC_3339.DateTime,
+    //        authors: [Author],
+    //        entries: [Entry],
+    //        links: [Link],
+    //        categories: [Category],
+    //        contributors: [Contributor],
+    //        generator: Generator?,
+    //        icon: String?,
+    //        logo: String?,
+    //        rights: Rights?,
+    //        subtitle: Subtitle?,
+    //        base: String?,
+    //        lang: String?
+    //    ) {
+    //        Feed(
+    //            uncheckedId: RFC_3987.IRI(__unchecked: (), value: id),
+    //            uncheckedTitle: title,
+    //            uncheckedUpdated: updated,
+    //            uncheckedAuthors: authors,
+    //            uncheckedEntries: entries,
+    //            uncheckedLinks: links,
+    //            uncheckedCategories: categories,
+    //            uncheckedContributors: contributors,
+    //            uncheckedGenerator: generator,
+    //            uncheckedIcon: icon.map { RFC_3987.IRI(__unchecked: (), value: $0) },
+    //            uncheckedLogo: logo.map { RFC_3987.IRI(__unchecked: (), value: $0) },
+    //            uncheckedRights: rights,
+    //            uncheckedSubtitle: subtitle,
+    //            uncheckedBase: base.map { RFC_3987.IRI(__unchecked: (), value: $0) },
+    //            uncheckedLang: lang
+    //        )
+    //    }
+    //
     //        private init(
     //            uncheckedId id: RFC_3987.IRI,
     //            uncheckedTitle title: Title,

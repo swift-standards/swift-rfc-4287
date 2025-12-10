@@ -8,7 +8,7 @@ extension RFC_4287 {
     public struct Author: Hashable, Sendable, Codable {
         /// The underlying person construct
         public let person: Person
-        
+
         /// Creates a new author
         ///
         /// - Parameter person: The person construct
@@ -28,25 +28,25 @@ extension RFC_4287.Author: ExpressibleByStringLiteral {
 }
 
 extension RFC_4287.Author {
-    
+
     /// The person's name
     public var name: String { person.name }
-    
+
     /// URI associated with the person
     public var uri: RFC_3987.IRI? { person.uri }
-    
+
     /// Email address
     public var email: RFC_2822.AddrSpec? { person.email }
-    
+
     /// Base IRI for resolving relative references
     public var base: RFC_3987.IRI? { person.base }
-    
+
     /// Language of the content
     public var lang: String? { person.lang }
 }
 
 extension RFC_4287.Author {
-    
+
     /// Creates a new author with the given details
     ///
     /// - Parameters:
@@ -71,7 +71,3 @@ extension RFC_4287.Author {
         )
     }
 }
-
-
-
-

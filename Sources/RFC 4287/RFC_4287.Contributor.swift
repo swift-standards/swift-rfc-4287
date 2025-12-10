@@ -5,8 +5,8 @@
 //  Created by Coen ten Thije Boonkkamp on 01/12/2025.
 //
 
-public import RFC_3987
 public import RFC_2822
+public import RFC_3987
 
 extension RFC_4287 {
     /// A contributor person construct as defined in RFC 4287
@@ -15,7 +15,7 @@ extension RFC_4287 {
     public struct Contributor: Hashable, Sendable, Codable {
         /// The underlying person construct
         public let person: Person
-        
+
         /// Creates a new contributor
         ///
         /// - Parameter person: The person construct
@@ -26,7 +26,7 @@ extension RFC_4287 {
 }
 
 extension RFC_4287.Contributor {
-    
+
     /// Creates a new contributor with the given details
     ///
     /// - Parameters:
@@ -55,16 +55,16 @@ extension RFC_4287.Contributor {
 extension RFC_4287.Contributor {
     /// The person's name
     public var name: String { person.name }
-    
+
     /// URI associated with the person
     public var uri: RFC_3987.IRI? { person.uri }
-    
+
     /// Email address
     public var email: RFC_2822.AddrSpec? { person.email }
-    
+
     /// Base IRI for resolving relative references
     public var base: RFC_3987.IRI? { person.base }
-    
+
     /// Language of the content
     public var lang: String? { person.lang }
 }

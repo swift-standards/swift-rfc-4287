@@ -7,23 +7,23 @@ extension RFC_4287 {
     public struct Category: Hashable, Sendable, Codable {
         /// The category term (required)
         public let term: String
-        
+
         /// The categorization scheme IRI (optional)
         public let scheme: RFC_3987.IRI?
-        
+
         /// Human-readable label for the category (optional)
         public let label: String?
-        
+
         /// Base IRI for resolving relative references (xml:base)
         ///
         /// Per RFC 4287 Section 2, any element may have an xml:base attribute.
         public let base: RFC_3987.IRI?
-        
+
         /// Language of the category (xml:lang)
         ///
         /// Per RFC 4287 Section 2, any element may have an xml:lang attribute.
         public let lang: String?
-        
+
         /// Creates a new category
         ///
         /// - Parameters:
@@ -50,7 +50,7 @@ extension RFC_4287 {
 }
 
 extension RFC_4287.Category {
-    
+
     /// Creates a new category with IRI.Representable scheme (convenience)
     ///
     /// Accepts any IRI.Representable type such as Foundation URL.

@@ -95,7 +95,16 @@ extension RFC_4287 {
             base: (any RFC_3987.IRI.Representable)? = nil,
             lang: String? = nil
         ) {
-            self.init(href: href.iri, rel: rel, type: type, hreflang: hreflang, title: title, length: length, base: base?.iri, lang: lang)
+            self.init(
+                href: href.iri,
+                rel: rel,
+                type: type,
+                hreflang: hreflang,
+                title: title,
+                length: length,
+                base: base?.iri,
+                lang: lang
+            )
         }
 
         /// Returns true if this link should be treated as an "alternate" relation
@@ -116,7 +125,7 @@ extension RFC_4287.Link {
     public struct Relation: Hashable, Sendable, ExpressibleByStringLiteral {
         /// The string value of the relation
         public let value: String
-        
+
         /// Creates a relation with a custom value
         ///
         /// - Parameter value: The relation type string
@@ -127,33 +136,33 @@ extension RFC_4287.Link {
 }
 
 extension RFC_4287.Link.Relation {
-    
+
     // MARK: - Standard Relations (RFC 4287)
-    
+
     /// Alternate representation
     public static let alternate = Self("alternate")
-    
+
     /// Related resource
     public static let related = Self("related")
-    
+
     /// Self-reference
     public static let `self` = Self("self")
-    
+
     /// Enclosed resource (e.g., podcast episode)
     public static let enclosure = Self("enclosure")
-    
+
     /// Source of information
     public static let via = Self("via")
-    
+
     // MARK: - Extension Relations
-    
+
     /// Comments/replies (RFC 4685 - Atom Threading Extensions)
     public static let replies = Self("replies")
 }
 
 extension RFC_4287.Link.Relation {
     // MARK: - ExpressibleByStringLiteral
-    
+
     public init(stringLiteral value: String) {
         self.init(value)
     }
@@ -165,7 +174,7 @@ extension RFC_4287.Link.Relation: Codable {
         let string = try container.decode(String.self)
         self.init(string)
     }
-    
+
     public func encode(to encoder: any Encoder) throws {
         var container = encoder.singleValueContainer()
         try container.encode(value)
@@ -173,8 +182,8 @@ extension RFC_4287.Link.Relation: Codable {
 }
 
 //
-//// MARK: - ExpressibleByStringLiteral
-//extension RFC_4287.Link: ExpressibleByStringLiteral {
+// // MARK: - ExpressibleByStringLiteral
+// extension RFC_4287.Link: ExpressibleByStringLiteral {
 //    /// Creates a link from a string literal (just href, alternate relation)
 //    ///
 //    /// Example:
@@ -189,4 +198,4 @@ extension RFC_4287.Link.Relation: Codable {
 //            href: RFC_3987.IRI(value), rel: nil, type: nil, hreflang: nil, title: nil,
 //            length: nil)
 //    }
-//}
+// }

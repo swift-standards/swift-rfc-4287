@@ -6,7 +6,7 @@ extension RFC_4287 {
     /// Text constructs are used for human-readable text in Atom documents.
     /// They can be plain text, HTML, or XHTML.
     public struct Text: Hashable, Sendable, Codable {
-    
+
         /// The type of this text construct
         public let type: RFC_4287.Text.ContentType
 

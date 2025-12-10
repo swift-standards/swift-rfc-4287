@@ -40,7 +40,7 @@ struct `Person Email Validation` {
 
     @Test
     func `Person with convenience emailString initializer`() throws {
-        let person = try RFC_4287.Person.init(
+        let person = try RFC_4287.Person(
             name: "Test User",
             uri: nil,
             email: .init("test@example.com"),

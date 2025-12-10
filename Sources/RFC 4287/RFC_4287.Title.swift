@@ -12,14 +12,14 @@ extension RFC_4287 {
     public struct Title: Hashable, Sendable, Codable {
         /// The underlying text construct
         public let text: Text
-        
+
         /// Creates a new title
         ///
         /// - Parameter text: The text construct
         public init(_ text: Text) {
             self.text = text
         }
-        
+
         /// Creates a new title with a string value
         ///
         /// - Parameters:
@@ -41,13 +41,13 @@ extension RFC_4287 {
 extension RFC_4287.Title {
     /// The title value
     public var value: String { text.value }
-    
+
     /// The content type
     public var type: RFC_4287.Text.ContentType { text.type }
-    
+
     /// Base IRI for resolving relative references
     public var base: RFC_3987.IRI? { text.base }
-    
+
     /// Language of the content
     public var lang: String? { text.lang }
 }
@@ -58,4 +58,3 @@ extension RFC_4287.Title: ExpressibleByStringLiteral {
         self.init(value, type: .text)
     }
 }
-

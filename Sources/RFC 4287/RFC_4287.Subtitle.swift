@@ -12,14 +12,14 @@ extension RFC_4287 {
     public struct Subtitle: Hashable, Sendable, Codable {
         /// The underlying text construct
         public let text: Text
-        
+
         /// Creates a new subtitle
         ///
         /// - Parameter text: The text construct
         public init(_ text: Text) {
             self.text = text
         }
-        
+
         /// Creates a new subtitle with a string value
         ///
         /// - Parameters:
@@ -39,16 +39,16 @@ extension RFC_4287 {
 }
 
 extension RFC_4287.Subtitle {
-    
+
     /// The subtitle value
     public var value: String { text.value }
-    
+
     /// The content type
     public var type: RFC_4287.Text.ContentType { text.type }
-    
+
     /// Base IRI for resolving relative references
     public var base: RFC_3987.IRI? { text.base }
-    
+
     /// Language of the content
     public var lang: String? { text.lang }
 }
@@ -59,4 +59,3 @@ extension RFC_4287.Subtitle: ExpressibleByStringLiteral {
         self.init(value, type: .text)
     }
 }
-
