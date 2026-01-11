@@ -29,10 +29,10 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(path: "../swift-rfc-2822.git"),
-        .package(path: "../swift-rfc-3339.git"),
-        .package(path: "../swift-rfc-3987.git"),
-        .package(path: "../swift-rfc-4648.git")
+        .package(path: "../swift-rfc-2822"),
+        .package(path: "../swift-rfc-3339"),
+        .package(path: "../swift-rfc-3987"),
+        .package(path: "../swift-rfc-4648")
     ],
     targets: [
         .target(
