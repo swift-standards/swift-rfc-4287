@@ -24,9 +24,9 @@ let package = Package(
     ],
     products: [
         .library(
-            name: .rfc4287,
-            targets: [.rfc4287]
-        ),
+            name: "RFC 4287",
+            targets: ["RFC 4287"]
+        )
     ],
     dependencies: [
         .package(path: "../swift-rfc-2822"),
@@ -36,13 +36,9 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: .rfc4287,
+            name: "RFC 4287",
             dependencies: [.rfc2822, .rfc3339, .rfc3987, .rfc4648]
-        ),
-        .testTarget(
-            name: "\(String.rfc4287)".tests,
-            dependencies: [.rfc4287]
-        ),
+        )
     ],
     swiftLanguageModes: [.v6]
 )
