@@ -11,8 +11,6 @@ extension RFC_4287.Person: Codable {
         case lang
     }
 
-    // reason: stdlib protocol witness — Decodable.init(from:) signature mandates the existential shape ([API-ERR-006] exception).
-    // swiftlint:disable:next no_any_protocol_existential
     public init(from decoder: any Decoder) throws(DecodingError) {
         // swift-linter:disable:next do throws for typed catch
         // REASON: KeyedDecodingContainer.decode(_:forKey:)/decodeIfPresent(_:forKey:) are untyped `throws` stdlib protocol requirements; no typed `E` exists to name.
@@ -59,8 +57,6 @@ extension RFC_4287.Person: Codable {
         }
     }
 
-    // reason: stdlib protocol witness — Encodable.encode(to:) signature mandates the existential shape ([API-ERR-006] exception).
-    // swiftlint:disable:next no_any_protocol_existential
     public func encode(to encoder: any Encoder) throws(EncodingError) {
         // swift-linter:disable:next do throws for typed catch
         // REASON: KeyedEncodingContainer.encode(_:forKey:)/encodeIfPresent(_:forKey:) are untyped `throws` stdlib protocol requirements; no typed `E` exists to name.

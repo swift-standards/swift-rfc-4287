@@ -134,8 +134,6 @@ extension RFC_4287.Content.ContentType {
 
     // MARK: - Codable
 
-    // reason: stdlib protocol witness — Decodable.init(from:) signature mandates the existential shape ([API-ERR-006] exception).
-    // swiftlint:disable:next no_any_protocol_existential
     public init(from decoder: any Decoder) throws(DecodingError) {
         // swift-linter:disable:next do throws for typed catch
         // REASON: Decoder.singleValueContainer()/decode(_:) are untyped `throws` stdlib protocol requirements; no typed `E` exists to name.
@@ -167,8 +165,6 @@ extension RFC_4287.Content.ContentType {
         }
     }
 
-    // reason: stdlib protocol witness — Encodable.encode(to:) signature mandates the existential shape ([API-ERR-006] exception).
-    // swiftlint:disable:next no_any_protocol_existential
     public func encode(to encoder: any Encoder) throws(EncodingError) {
         // swift-linter:disable:next do throws for typed catch
         // REASON: SingleValueEncodingContainer.encode(_:) is an untyped `throws` stdlib protocol requirement; no typed `E` exists to name.
