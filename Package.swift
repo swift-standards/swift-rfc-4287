@@ -1,4 +1,4 @@
-// swift-tools-version: 6.3.3
+// swift-tools-version: 6.4
 
 import PackageDescription
 
@@ -17,10 +17,10 @@ extension Target.Dependency {
 let package = Package(
     name: "swift-rfc-4287",
     platforms: [
-        .macOS("27"),
-        .iOS("27"),
-        .tvOS("27"),
-        .watchOS("27")
+        .macOS(.v27),
+        .iOS(.v27),
+        .tvOS(.v27),
+        .watchOS(.v27),
     ],
     products: [
         .library(
@@ -32,7 +32,7 @@ let package = Package(
         .package(url: "https://github.com/swift-ietf/swift-rfc-2822.git", branch: "main"),
         .package(url: "https://github.com/swift-ietf/swift-rfc-3339.git", branch: "main"),
         .package(url: "https://github.com/swift-ietf/swift-rfc-3987.git", branch: "main"),
-        .package(url: "https://github.com/swift-ietf/swift-rfc-4648.git", branch: "main")
+        .package(url: "https://github.com/swift-ietf/swift-rfc-4648.git", branch: "main"),
     ],
     targets: [
         .target(
@@ -42,7 +42,7 @@ let package = Package(
         .testTarget(
             name: "RFC 4287 Tests",
             dependencies: [
-                "RFC 4287",
+                "RFC 4287"
             ]
         ),
     ],
