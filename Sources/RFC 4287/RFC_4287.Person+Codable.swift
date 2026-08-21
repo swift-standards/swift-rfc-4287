@@ -1,7 +1,6 @@
 import RFC_2822
 import RFC_3987
 
-// MARK: - Codable
 extension RFC_4287.Person: Codable {
     enum CodingKeys: String, CodingKey {
         case name
@@ -12,8 +11,7 @@ extension RFC_4287.Person: Codable {
     }
 
     public init(from decoder: any Decoder) throws(DecodingError) {
-        // swift-linter:disable:next do throws for typed catch
-        // REASON: KeyedDecodingContainer.decode(_:forKey:)/decodeIfPresent(_:forKey:) are untyped `throws` stdlib protocol requirements; no typed `E` exists to name.
+
         do {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             name = try container.decode(String.self, forKey: .name)
@@ -23,7 +21,6 @@ extension RFC_4287.Person: Codable {
                 uri = nil
             }
 
-            // Decode email as string and convert to AddrSpec
             if let emailString = try container.decodeIfPresent(String.self, forKey: .email) {
                 do throws(RFC_2822.AddrSpec.Error) {
                     email = try RFC_2822.AddrSpec(ascii: emailString.utf8.map { Byte($0) })
@@ -58,13 +55,12 @@ extension RFC_4287.Person: Codable {
     }
 
     public func encode(to encoder: any Encoder) throws(EncodingError) {
-        // swift-linter:disable:next do throws for typed catch
-        // REASON: KeyedEncodingContainer.encode(_:forKey:)/encodeIfPresent(_:forKey:) are untyped `throws` stdlib protocol requirements; no typed `E` exists to name.
+
         do {
             var container = encoder.container(keyedBy: CodingKeys.self)
             try container.encode(name, forKey: .name)
             try container.encodeIfPresent(uri?.value, forKey: .uri)
-            // Encode email as string
+
             if let email {
                 try container.encode(email.description, forKey: .email)
             }

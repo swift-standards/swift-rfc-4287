@@ -16,7 +16,6 @@ extension `Ergonomic Improvements Tests`.Unit {
         #expect(category.scheme == nil)
         #expect(category.label == nil)
 
-        // Test in array context
         let categories: [RFC_4287.Category] = ["News", "Sports", "Politics"]
         #expect(categories.count == 3)
         #expect(categories[0].term == "News")
@@ -30,7 +29,6 @@ extension `Ergonomic Improvements Tests`.Unit {
         #expect(person.uri == nil)
         #expect(person.email == nil)
 
-        // Test in array context (authors)
         let authors: [RFC_4287.Person] = ["Alice", "Bob", "Carol"]
         #expect(authors.count == 3)
         #expect(authors[0].name == "Alice")
@@ -46,7 +44,6 @@ extension `Ergonomic Improvements Tests`.Unit {
         #expect(link.title == nil)
         #expect(link.length == nil)
 
-        // Test in array context
         let links: [RFC_4287.Link] = [
             .init(href: "https://example.com/1"),
             .init(href: "https://example.com/2"),

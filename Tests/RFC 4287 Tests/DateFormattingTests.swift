@@ -37,7 +37,6 @@ extension `RFC 3339 DateTime Tests`.Unit {
 
         let formatted = String(dateTime)
 
-        // Should be ISO 8601 format
         #expect(formatted.contains("2021-01-01"))
         #expect(formatted.contains("T"))
         #expect(formatted.contains("12:30:45"))
